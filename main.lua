@@ -337,11 +337,11 @@ function load()
     end
 
     local localLoad = function()
-        if love.filesystem.exists('permanent_save') then
+        if love.filesystem.getInfo('permanent_save') then
             local save_data = bitser.loadLoveFile('permanent_save')
             loadPermanentVariables(save_data)
         end
-        if love.filesystem.exists('transient_save') then
+        if love.filesystem.getInfo('transient_save') then
             local save_data = bitser.loadLoveFile('transient_save')
             loadTransientVariables(save_data)
         else first_run_ever = true end
@@ -387,9 +387,9 @@ function recursiveEnumerate(folder, file_list)
     local items = love.filesystem.getDirectoryItems(folder)
     for _, item in ipairs(items) do
         local file = folder .. '/' .. item
-        if love.filesystem.isFile(file) then
+        if love.filesystem.getInfo(file, "file") then
             table.insert(file_list, file)
-        elseif love.filesystem.isDirectory(file) then
+        elseif love.filesystem.getInfo(file, "directory") then
             recursiveEnumerate(file, file_list)
         end
     end
