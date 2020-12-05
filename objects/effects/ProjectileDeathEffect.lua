@@ -24,9 +24,9 @@ end
 
 function ProjectileDeathEffect:draw()
     pushRotate(self.x, self.y, self.r or 0)
-    love.graphics.setColor(self.current_color)
+    love.graphics.setColor(color255To1(self.current_color))
     love.graphics.rectangle('fill', self.x - self.w/2, self.y - self.w/2, self.w, self.w)
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
     love.graphics.pop()
 end
 

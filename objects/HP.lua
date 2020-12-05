@@ -27,12 +27,12 @@ function HP:update(dt)
 end
 
 function HP:draw()
-    love.graphics.setColor(hp_color)
+    love.graphics.setColor(color255To1(hp_color))
     love.graphics.rectangle('fill', self.x - self.w/2, self.y - 2, self.w, 4)
     love.graphics.rectangle('fill', self.x - 2, self.y - self.h/2, 4, self.h)
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
     love.graphics.circle('line', self.x, self.y, self.w)
-    love.graphics.setColor(255, 255, 255)
+    love.graphics.setColor(color255To1(255, 255, 255))
 end
 
 function HP:destroy()

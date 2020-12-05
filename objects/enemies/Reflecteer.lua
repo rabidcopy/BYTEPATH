@@ -44,9 +44,9 @@ function Reflecteer:update(dt)
 end
 
 function Reflecteer:draw()
-    love.graphics.setColor(hp_color)
-    if self.invulnerable then love.graphics.setColor(default_color) end
-    if self.hit_flash then love.graphics.setColor(default_color) end
+    love.graphics.setColor(color255To1(hp_color))
+    if self.invulnerable then love.graphics.setColor(color255To1(default_color)) end
+    if self.hit_flash then love.graphics.setColor(color255To1(default_color)) end
     self.shape:draw('line')
 end
 

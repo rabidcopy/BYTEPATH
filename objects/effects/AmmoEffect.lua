@@ -21,9 +21,9 @@ function AmmoEffect:update(dt)
 end
 
 function AmmoEffect:draw()
-    love.graphics.setColor(self.current_color)
+    love.graphics.setColor(color255To1(self.current_color))
     draft:rhombus(self.x, self.y, self.w, self.h, 'fill')
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
 end
 
 function AmmoEffect:destroy()

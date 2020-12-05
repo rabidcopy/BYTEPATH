@@ -14,9 +14,9 @@ function TrailParticle:update(dt)
 end
 
 function TrailParticle:draw()
-    love.graphics.setColor(self.color)
+    love.graphics.setColor(color255To1(self.color))
     love.graphics.circle('fill', self.x, self.y, self.r)
-    love.graphics.setColor(255, 255, 255)
+    love.graphics.setColor(color255To1(255, 255, 255))
 end
 
 function TrailParticle:destroy()

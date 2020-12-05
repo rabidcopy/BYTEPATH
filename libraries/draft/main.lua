@@ -12,7 +12,7 @@ local draft = Draft()
 function love.draw()
 
 	-- getters and setters
-	love.graphics.setColor{255, 255, 255}
+	love.graphics.setColor(color255To1({255, 255, 255}))
 	local y = 100
 	draft:setMode('fill')
 	love.graphics.print("The current mode is " .. draft:getMode() .. ".", 10, y)
@@ -20,7 +20,7 @@ function love.draw()
 	love.graphics.print("The new mode is " .. draft:getMode() .. ".", 10, y + 20)
 
 	-- primary shapes
-	love.graphics.setColor{255, 0, 0}
+	love.graphics.setColor(color255To1({255, 0, 0}))
 	draft:line({10, 10, 45, 45, 75, 20})
 	draft:triangleIsosceles(90, 50, 60, 70)
 	draft:triangleIsosceles(90, 50, 40, 35, 'fill')
@@ -36,7 +36,7 @@ function love.draw()
 	draft:polygon({10, 30, 200, 500, 600, 300, 270, 40}, false)
 
 	-- secondary shapes
-	love.graphics.setColor{0, 255, 0}
+	love.graphics.setColor(color255To1({0, 255, 0}))
 	draft:triangleEquilateral(340, 50, 80)
 	draft:triangleEquilateral(340, 50, 50, 'fill')
 	draft:triangleEquilateral(200, 200, 200, false)
@@ -60,7 +60,7 @@ function love.draw()
 	draft:diamond(200, 200, 200, false)
 
 	-- tertiary shapes
-	love.graphics.setColor{0, 0, 255}
+	love.graphics.setColor(color255To1({0, 0, 255}))
 	draft:rhombusEquilateral(50, 200, 80)
 	draft:rhombusEquilateral(50, 200, 60, 'fill')
 	draft:rhombusEquilateral(200, 200, 200, false)
@@ -78,7 +78,7 @@ function love.draw()
 	draft:parallelogram(200, 200, 100, 125, 75, false)
 
 	-- curved shapes
-	love.graphics.setColor{127, 127, 127}
+	love.graphics.setColor(color255To1({127, 127, 127}))
 	draft:compass(450, 85, 60, math.rad(135), 0, 10, false, nil)
 	draft:circle(40, 280, 50)
 	draft:circle(40, 280, 40, nil, 'fill')
@@ -109,7 +109,7 @@ function love.draw()
 	draft:dome(400, 400, 400, 2.3, 5, false)
 
 	-- complex shapes
-	love.graphics.setColor{127, 0, 127}
+	love.graphics.setColor(color255To1({127, 0, 127}))
 	draft:star(455, 220, 80, 25, 4, 2)
 	draft:star(455, 220, 55, 10, 4, 2, 'fill')
 	draft:star(500, 500, 80, 14, 6, nil, false)
@@ -118,7 +118,7 @@ function love.draw()
 	draft:egg(500, 500, 30, nil, nil, nil, false)
 
 	-- linkers
-	love.graphics.setColor{255, 127, 0}
+	love.graphics.setColor(color255To1({255, 127, 0}))
 	local v1
 	local v2
 

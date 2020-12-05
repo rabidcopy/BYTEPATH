@@ -397,7 +397,7 @@ function DeviceModule:update(dt)
 end
 
 function DeviceModule:draw()
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
     pushRotateScale(self.x, self.y, 0, self.sx, self.sy)
     local w, h = self.w, self.h 
     local x, y = self.x, self.y
@@ -427,10 +427,10 @@ function DeviceModule:draw()
     if fn.any(unlocked_devices, device) then 
         love.graphics.print('UNLOCKED', self.x - self.w/2 + 10, self.y + 23 + self.device_y_offsets[device]/2, 0, 1.01, 1.01, self.font:getWidth('UNLOCKED')/2, self.font:getHeight()/2)
     else
-        love.graphics.setColor(skill_point_color)
+        love.graphics.setColor(color255To1(skill_point_color))
         love.graphics.print('LOCKED - ' .. self.device_costs[device] .. 'SP', self.x - self.w/2 + 10, self.y + 23 + self.device_y_offsets[device]/2, 0, 1.01, 1.01, 
         self.font:getWidth('LOCKED - ' .. self.device_costs[device] .. 'SP')/2, self.font:getHeight()/2)
-        love.graphics.setColor(default_color)
+        love.graphics.setColor(color255To1(default_color))
     end
 
     -- Right
@@ -445,10 +445,10 @@ function DeviceModule:draw()
     end
 
     local r, g, b = unpack(default_color)
-    love.graphics.setColor(r, g, b, 32)
+    love.graphics.setColor(color255To1(r, g, b, 32))
     drawPentagon(32)
     drawPentagon(16)
-    love.graphics.setColor(r, g, b, 255)
+    love.graphics.setColor(color255To1(r, g, b, 255))
     love.graphics.print('TECH', x, y - 38, 0, 1, 1, self.font:getWidth('TECH')/2, self.font:getHeight()/2)
     love.graphics.print('ATK', x - 41, y - 12, 0, 1, 1, self.font:getWidth('ATK')/2, self.font:getHeight()/2)
     love.graphics.print('DEF', x + 41, y - 12, 0, 1, 1, self.font:getWidth('DEF')/2, self.font:getHeight()/2)
@@ -462,10 +462,10 @@ function DeviceModule:draw()
         table.insert(points, x + d*16*math.cos(-math.pi/2 + (i-1)*(2*math.pi/5)) + random(-1, 1))
         table.insert(points, y + d*16*math.sin(-math.pi/2 + (i-1)*(2*math.pi/5)) + random(-1, 1))
     end
-    love.graphics.setColor(r, g, b, 64)
+    love.graphics.setColor(color255To1(r, g, b, 64))
     local triangles = love.math.triangulate(points)
     for _, triangle in ipairs(triangles) do love.graphics.polygon('fill', triangle) end
-    love.graphics.setColor(r, g, b, 255)
+    love.graphics.setColor(color255To1(r, g, b, 255))
     love.graphics.polygon('line', points)
 
     -- Text

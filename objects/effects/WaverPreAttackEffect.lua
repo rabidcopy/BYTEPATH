@@ -17,11 +17,11 @@ end
 function WaverPreAttackEffect:draw()
     if not self.waver or self.waver.dead then return end
     local r, g, b = unpack(hp_color)
-    love.graphics.setColor(r, g, b, self.alpha)
+    love.graphics.setColor(color255To1(r, g, b, self.alpha))
     pushRotateScale(self.x, self.y, self.waver.r, self.s, self.s)
     love.graphics.polygon('line', self.x + self.w, self.y, self.x, self.y + self.h, self.x - self.w, self.y, self.x, self.y - self.h)
     love.graphics.pop()
-    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.setColor(color255To1(255, 255, 255, 255))
 end
 
 function WaverPreAttackEffect:destroy()

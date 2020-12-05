@@ -39,15 +39,15 @@ end
 
 function Key:draw()
     pushRotateScale(self.x, self.y, 0, random(0.95, 1.05), random(0.95, 1.05))
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
     draft:rhombus(self.x, self.y, 1.5*self.w, 1.5*self.h, 'line')
     draft:rhombus(self.x, self.y, 0.5*self.w, 0.5*self.h, 'fill')
     draft:rhombus(self.x, self.y, 2*self.w, 2*self.h, 'line')
     draft:rhombus(self.x, self.y, 2.5*self.w, 2.5*self.h, 'line')
     love.graphics.pop()
-    love.graphics.setColor(222, 222, 222, self.alpha)
+    love.graphics.setColor(color255To1(222, 222, 222, self.alpha))
     draft:rhombus(self.x, self.y, self.sx*3*self.w, self.sy*3*self.h, 'line')
-    love.graphics.setColor(255, 255, 255)
+    love.graphics.setColor(color255To1(255, 255, 255))
 end
 
 function Key:die()

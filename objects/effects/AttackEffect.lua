@@ -31,9 +31,9 @@ end
 function AttackEffect:draw()
     if not self.visible then return end
 
-    love.graphics.setColor(self.current_color)
+    love.graphics.setColor(color255To1(self.current_color))
     draft:rhombus(self.x, self.y, self.sx*2*self.w, self.sy*2*self.h, 'line')
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
 end
 
 function AttackEffect:destroy()

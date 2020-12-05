@@ -283,17 +283,17 @@ function Projectile:draw()
     if self.invisible then return end
     pushRotate(self.x, self.y, Vector.angle(self.vx, self.vy)) 
     if self.attack == 'Homing' or self.attack == '2Split' or self.attack == '4Split' or self.attack == 'Explode' then
-        love.graphics.setColor(self.color)
+        love.graphics.setColor(color255To1(self.color))
         love.graphics.draw(self.mesh_left, self.x, self.y)
-        love.graphics.setColor(default_color)
+        love.graphics.setColor(color255To1(default_color))
         love.graphics.draw(self.mesh_right, self.x, self.y)
     else
-        love.graphics.setColor(self.color)
-        if self.attack == 'Spread' then love.graphics.setColor(table.random(all_colors)) end
-        if self.attack == 'Bounce' then love.graphics.setColor(table.random(default_colors)) end
+        love.graphics.setColor(color255To1(self.color))
+        if self.attack == 'Spread' then love.graphics.setColor(color255To1(table.random(all_colors))) end
+        if self.attack == 'Bounce' then love.graphics.setColor(color255To1(table.random(default_colors))) end
         love.graphics.draw(self.mesh_left, self.x, self.y)
-        love.graphics.setColor(default_color)
-        if self.attack == 'Flame' then love.graphics.setColor(self.color) end
+        love.graphics.setColor(color255To1(default_color))
+        if self.attack == 'Flame' then love.graphics.setColor(color255To1(self.color)) end
         love.graphics.draw(self.mesh_right, self.x, self.y)
         love.graphics.setLineWidth(1)
     end

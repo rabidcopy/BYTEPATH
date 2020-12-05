@@ -47,11 +47,11 @@ function Glitcher:update(dt)
 end
 
 function Glitcher:draw()
-    love.graphics.setColor(hp_color)
-    if self.hit_flash then love.graphics.setColor(default_color) end
+    love.graphics.setColor(color255To1(hp_color))
+    if self.hit_flash then love.graphics.setColor(color255To1(default_color)) end
     love.graphics.rectangle('fill', self.x - self.w, self.y - self.h + (2*self.h - 2*self.h*(self.hp/self.max_hp)), 2*self.w, 2*self.h*(self.hp/self.max_hp))
     self.shape:draw('line')
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
 end
 
 function Glitcher:hit(damage)

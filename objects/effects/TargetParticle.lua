@@ -12,9 +12,9 @@ function TargetParticle:update(dt)
 end
 
 function TargetParticle:draw()
-    love.graphics.setColor(self.color)
+    love.graphics.setColor(color255To1(self.color))
     draft:rhombus(self.x, self.y, 2*self.r, 2*self.r, 'fill')
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
 end
 
 function TargetParticle:destroy()

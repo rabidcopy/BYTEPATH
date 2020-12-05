@@ -1,4 +1,5 @@
-Steam = require 'libraries/steamworks'
+Steam = nil
+-- require 'libraries/steamworks'
 if type(Steam) == 'boolean' then Steam = nil end
 
 Object = require 'libraries/classic/classic'
@@ -35,7 +36,7 @@ function love.load()
     love.filesystem.setIdentity('BYTEPATH')
     love.graphics.setDefaultFilter('nearest', 'nearest')
     love.graphics.setLineStyle('rough')
-    love.graphics.setBackgroundColor(background_color)
+    love.graphics.setBackgroundColor(color255To1(background_color))
     love.keyboard.setKeyRepeat(false)
 
     loadFonts('resources/fonts')
@@ -175,9 +176,9 @@ function love.draw()
         if flash_frames == -1 then flash_frames = nil end
     end
     if flash_frames then
-        love.graphics.setColor(background_color)
+        love.graphics.setColor(color255To1(background_color))
         love.graphics.rectangle('fill', 0, 0, sx*gw, sy*gh)
-        love.graphics.setColor(255, 255, 255)
+        love.graphics.setColor(color255To1(255, 255, 255))
     end
 
     draw_times[draw_index] = os.clock() - start_time

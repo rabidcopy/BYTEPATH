@@ -300,16 +300,16 @@ function Camera:draw()
     end
 
     if self.flashing then
-        local r, g, b, a = love.graphics.getColor()
-        love.graphics.setColor(self.flash_color)
+        local r, g, b, a = color1To255(love.graphics.getColor())
+        love.graphics.setColor(color255To1(self.flash_color))
         love.graphics.rectangle('fill', 0, 0, self.w, self.h)
-        love.graphics.setColor(r, g, b, a)
+        love.graphics.setColor(color255To1(r, g, b, a))
     end
 
-    local r, g, b, a = love.graphics.getColor()
-    love.graphics.setColor(self.fade_color)
+    local r, g, b, a = color1To255(love.graphics.getColor())
+    love.graphics.setColor(color255To1(self.fade_color))
     love.graphics.rectangle('fill', 0, 0, self.w, self.h)
-    love.graphics.setColor(r, g, b, a)
+    love.graphics.setColor(color255To1(r, g, b, a))
 end
 
 function Camera:follow(x, y)

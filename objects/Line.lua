@@ -30,7 +30,7 @@ function Line:draw()
     if cy < -40 or cy > gh + 40 then return end
 
     love.graphics.setLineWidth(1/camera.scale)
-    love.graphics.setColor(self.color)
+    love.graphics.setColor(color255To1(self.color))
     if self.node_1.bought and self.node_2.bought then love.graphics.setLineWidth(2.5/camera.scale) end
     for i = 1, #self.points do
         local point = self.points[i]
@@ -38,6 +38,6 @@ function Line:draw()
         if next_point then love.graphics.line(point.x, point.y, next_point.x, next_point.y) end
     end
     -- love.graphics.line(self.node_1.x, self.node_1.y, self.node_2.x, self.node_2.y)
-    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.setColor(color255To1(255, 255, 255, 255))
     love.graphics.setLineWidth(1)
 end

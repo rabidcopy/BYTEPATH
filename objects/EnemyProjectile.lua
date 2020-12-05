@@ -127,13 +127,13 @@ function EnemyProjectile:update(dt)
 end
 
 function EnemyProjectile:draw()
-    love.graphics.setColor(hp_color)
+    love.graphics.setColor(color255To1(hp_color))
     pushRotate(self.x, self.y, self.r)
     local w, h = 2*self.s, self.s - self.s/4
     love.graphics.rectangle('fill', self.x - w, self.y - h, 2*w, h)
     if self.hp == 2 then love.graphics.rectangle('line', self.x - 2*w, self.y - 2*h, 4*w, 3*h) end
     love.graphics.pop()
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
 end
 
 function EnemyProjectile:destroy()

@@ -55,7 +55,7 @@ function soundUpdate(dt)
 
     local remove = {}
     for i = #playing_sources, 1, -1 do
-        if playing_sources[i].source:isStopped() then
+        if not playing_sources[i].source:isPlaying() then
             if fn.any(playing_sources[i].tags, 'music') then playRandomSong() end
             table.remove(playing_sources, i)
         end
@@ -105,7 +105,7 @@ function play(name, opts)
         for _, tag in ipairs(source.tags) do volume = volume*(tags[tag].volume or 1) end
         cloned_source:setVolume(volume)
         cloned_source:setPitch(opts.pitch or 1)
-        cloned_source:setLooping(opts.loop)
+        cloned_source:setLooping(opts.loop == true)
         cloned_source:play()
         table.insert(playing_sources, {volume = volume, tags = source.tags, source = cloned_source})
         return cloned_source
@@ -116,7 +116,7 @@ function play(name, opts)
         for _, tag in ipairs(sources[name].tags) do volume = volume*(tags[tag].volume or 1) end
         source:setVolume(volume)
         source:setPitch(opts.pitch or 1)
-        source:setLooping(opts.loop)
+        source:setLooping(opts.loop == true)
         source:play()
         table.insert(playing_sources, {tags = sources[name].tags, source = source})
         return source

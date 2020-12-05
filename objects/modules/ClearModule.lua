@@ -201,16 +201,16 @@ function ClearModule:draw()
         if self.selection_index == 1 then r, g, b = unpack(boost_color) end
         if self.selection_index == 2 then r, g, b = unpack(skill_point_color) end
         if self.selection_index == 3 then r, g, b = unpack(hp_color) end
-        love.graphics.setColor(r, g, b, 128)
+        love.graphics.setColor(color255To1(r, g, b, 128))
         local x_offset = self.console.font:getWidth('    ')
         love.graphics.rectangle('fill', 8 + x_offset - 2, self.y + self.selection_index*12 + 17 + 12, width + 4, self.console.font:getHeight())
-        love.graphics.setColor(255, 255, 255, 255)
+        love.graphics.setColor(color255To1(255, 255, 255, 255))
     elseif self.active and self.confirm_selecting then
         local width = self.confirm_selection_widths[self.confirm_selection_index]
         local r, g, b = unpack(default_color)
-        love.graphics.setColor(r, g, b, 128)
+        love.graphics.setColor(color255To1(r, g, b, 128))
         local x_offset = self.console.font:getWidth('    ')
         love.graphics.rectangle('fill', 8 + x_offset - 2, self.y + self.confirm_selection_index*12 + 8*12 + 17, width + 4, self.console.font:getHeight())
-        love.graphics.setColor(255, 255, 255, 255)
+        love.graphics.setColor(color255To1(255, 255, 255, 255))
     end
 end

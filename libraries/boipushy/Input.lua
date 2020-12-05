@@ -16,6 +16,9 @@ Input.all_keys = {
     "dpdown", "dpleft", "dpright", "leftx", "lefty", "rightx", "righty",
 }
 
+Input.not_keys = { "dpup", "dpdown", "dpleft", "dpright", "fdown", "fup", "fleft", "fright", "l1", "r1", "l2", "r2", "mouse1", "mouse2", "mouse3",
+    "mouse4", "mouse5" }
+
 function Input.new()
     local self = {}
 
@@ -42,6 +45,15 @@ function Input.new()
     end
 
     return setmetatable(self, Input)
+end
+
+function Input:notKey(element)
+  for _,value in ipairs(Input.not_keys) do
+    if value == element then
+      return true
+    end
+  end
+  return false
 end
 
 function Input:bind(key, action)
@@ -152,7 +164,7 @@ function Input:down(action, interval, delay)
 
     elseif action and not interval and not delay then
         for _, key in ipairs(self.binds[action]) do
-            if (love.keyboard.isDown(key) or love.mouse.isDown(key_to_button[key] or 0)) then
+            if (((not Input:notKey(key)) and love.keyboard.isDown(key)) or love.mouse.isDown(key_to_button[key] or 0)) then
                 return true
             end
             

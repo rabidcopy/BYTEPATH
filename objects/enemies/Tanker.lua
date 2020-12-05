@@ -32,10 +32,10 @@ function Tanker:update(dt)
 end
 
 function Tanker:draw()
-    love.graphics.setColor(hp_color)
-    if self.hit_flash then love.graphics.setColor(default_color) end
+    love.graphics.setColor(color255To1(hp_color))
+    if self.hit_flash then love.graphics.setColor(color255To1(default_color)) end
     self.shape:draw('line')
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
 end
 
 function Tanker:hit(damage)

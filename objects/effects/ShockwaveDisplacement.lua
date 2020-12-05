@@ -14,9 +14,9 @@ function ShockwaveDisplacement:update(dt)
 end
 
 function ShockwaveDisplacement:draw()
-    love.graphics.setColor(255, 255, 255, self.alpha)
+    love.graphics.setColor(color255To1(255, 255, 255, self.alpha))
     love.graphics.draw(assets.shockwave_displacement, self.x, self.y, 0, self.sx, self.sy, assets.shockwave_displacement:getWidth()/2, assets.shockwave_displacement:getHeight()/2)
-    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.setColor(color255To1(255, 255, 255, 255))
 end
 
 function ShockwaveDisplacement:destroy()

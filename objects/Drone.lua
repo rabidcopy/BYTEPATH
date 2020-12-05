@@ -25,7 +25,7 @@ end
 
 function Drone:draw()
     pushRotate(self.x, self.y, self.player.r)
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
     draft:rhombus(self.x, self.y, self.w, self.h, 'line')
     love.graphics.pop()
 end

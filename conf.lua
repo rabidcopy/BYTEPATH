@@ -7,7 +7,7 @@ function love.conf(t)
     t.releases = {
         title = 'BYTEPATH',              -- The project title (string)
         package = 'BYTEPATH',            -- The project command and package name (string)
-        loveVersion = '0.10.2',        -- The project LÖVE version
+        loveVersion = '11.3',        -- The project LÖVE version
         version = '1.0',            -- The project version
         author = 'SSYGEN',             -- Your name (string)
         email = 'adonaac@gmail.com',              -- Your email (string)
@@ -19,7 +19,7 @@ function love.conf(t)
     }
 
     t.identity = nil                   -- The name of the save directory (string)
-    t.version = "0.10.2"                -- The LÖVE version this game was made for (string)
+    t.version = "11.3"                -- The LÖVE version this game was made for (string)
     t.console = false                  -- Attach a console (boolean, Windows only)
  
     t.window.title = "BYTEPATH" -- The window title (string)

@@ -42,17 +42,17 @@ end
 function LightningLine:draw()
     for i, line in ipairs(self.lines) do 
         local r, g, b = unpack(self.color or boost_color)
-        love.graphics.setColor(r, g, b, self.alpha)
+        love.graphics.setColor(color255To1(r, g, b, self.alpha))
         love.graphics.setLineWidth(2.5)
         love.graphics.line(line.x1, line.y1, line.x2, line.y2) 
 
         local r, g, b = unpack(default_color)
-        love.graphics.setColor(r, g, b, self.alpha)
+        love.graphics.setColor(color255To1(r, g, b, self.alpha))
         love.graphics.setLineWidth(1.5)
         love.graphics.line(line.x1, line.y1, line.x2, line.y2) 
     end
     love.graphics.setLineWidth(1)
-    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.setColor(color255To1(255, 255, 255, 255))
 end
 
 function LightningLine:destroy()

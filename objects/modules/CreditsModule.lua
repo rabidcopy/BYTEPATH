@@ -71,9 +71,9 @@ function CreditsModule:draw()
     if self.vertical_selection_index >= 6 then y = y + font:getHeight() + 2 end
     local w, h = t.w + 2, font:getHeight()
     local r, g, b = unpack(boost_color)
-    love.graphics.setColor(r, g, b, 128)
+    love.graphics.setColor(color255To1(r, g, b, 128))
     love.graphics.rectangle('fill', 8 + x, self.y + y, w, h)
-    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.setColor(color255To1(255, 255, 255, 255))
 end
 
 function CreditsModule:setSelections()

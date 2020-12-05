@@ -35,11 +35,11 @@ end
 function ShapeEffect:draw()
     if self.disappear then return end
     if self.first then
-        love.graphics.setColor(default_color)
+        love.graphics.setColor(color255To1(default_color))
         self:drawShape()
     elseif self.second then
-        if self.color == 'random' then love.graphics.setColor(table.random(self.default_colors))
-        else love.graphics.setColor(self.color) end
+        if self.color == 'random' then love.graphics.setColor(color255To1(table.random(self.default_colors)))
+        else love.graphics.setColor(color255To1(self.color)) end
         self:drawShape()
     end
 end

@@ -27,9 +27,9 @@ function RGBShift:update(dt)
 end
 
 function RGBShift:draw()
-    love.graphics.setColor(self.color)
+    love.graphics.setColor(color255To1(self.color))
     love.graphics.rectangle('fill', self.x - self.w/2, self.y - self.h/2, self.w, self.h)
-    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.setColor(color255To1(255, 255, 255, 255))
 end
 
 function RGBShift:destroy()

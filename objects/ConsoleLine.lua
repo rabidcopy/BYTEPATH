@@ -127,23 +127,23 @@ function ConsoleLine:draw()
         if self.characters[i].language == 'normal' then love.graphics.setFont(normal_font)
         elseif self.characters[i].language == 'arch' then love.graphics.setFont(arch_font) end
 
-        if self.characters[i].c == '{' then love.graphics.setColor(skill_point_color) end
-        if self.characters[i].c == '}' then love.graphics.setColor(default_color) end
-        if self.characters[i].c == '<' then love.graphics.setColor(ammo_color) end
-        if self.characters[i].c == '>' then love.graphics.setColor(default_color) end
-        if self.characters[i].c == ';' then love.graphics.setColor(skill_point_color) end
-        if self.characters[i].c == ',' then love.graphics.setColor(default_color) end
-        if self.characters[i].c == '@' then love.graphics.setColor(hp_color) end
-        if self.characters[i].c == '#' then love.graphics.setColor(default_color) end
-        if self.characters[i].c == '$' then love.graphics.setColor(boost_color) end
-        if self.characters[i].c == '%' then love.graphics.setColor(default_color) end
+        if self.characters[i].c == '{' then love.graphics.setColor(color255To1(skill_point_color)) end
+        if self.characters[i].c == '}' then love.graphics.setColor(color255To1(default_color)) end
+        if self.characters[i].c == '<' then love.graphics.setColor(color255To1(ammo_color)) end
+        if self.characters[i].c == '>' then love.graphics.setColor(color255To1(default_color)) end
+        if self.characters[i].c == ';' then love.graphics.setColor(color255To1(skill_point_color)) end
+        if self.characters[i].c == ',' then love.graphics.setColor(color255To1(default_color)) end
+        if self.characters[i].c == '@' then love.graphics.setColor(color255To1(hp_color)) end
+        if self.characters[i].c == '#' then love.graphics.setColor(color255To1(default_color)) end
+        if self.characters[i].c == '$' then love.graphics.setColor(color255To1(boost_color)) end
+        if self.characters[i].c == '%' then love.graphics.setColor(color255To1(default_color)) end
         if not self.characters[i].marker then
-            local r, g, b = love.graphics.getColor()
+            local r, g, b = color1To255(love.graphics.getColor())
             if self.background_colors[i] then
-                love.graphics.setColor(self.background_colors[i])
+                love.graphics.setColor(color255To1(self.background_colors[i]))
                 love.graphics.rectangle('fill', self.x + self.characters[i].width, self.y + math.floor(normal_font:getHeight()/2), normal_font:getWidth(self.characters[i].c), normal_font:getHeight())
             end
-            love.graphics.setColor(self.foreground_colors[i] or {r, g, b} or self.color or default_color)
+            love.graphics.setColor(color255To1(self.foreground_colors[i] or {r, g, b} or self.color or default_color))
             if self.characters[i].language == 'normal' then love.graphics.print(self.characters[i].c, self.x + self.characters[i].width, self.y + math.floor(normal_font:getHeight()/2), 0, 1, 1, 0, 0)
             else love.graphics.print(self.characters[i].c, self.x + self.characters[i].width, self.y, 0, 1, 1, 0, 0) end
         end

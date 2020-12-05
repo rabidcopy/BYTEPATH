@@ -17,12 +17,12 @@ end
 
 function LaserLine:draw()
     love.graphics.setLineWidth(self.line_width)
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
     love.graphics.line(self.x1, self.y1, self.x2, self.y2)
     love.graphics.setLineWidth(1)
 
     love.graphics.setLineWidth(self.side_line_width)
-    love.graphics.setColor(hp_color)
+    love.graphics.setColor(color255To1(hp_color))
     local x1u, y1u = self.x1 + self.s*math.cos(self.angle - math.pi/2), self.y1 + self.s*math.sin(self.angle - math.pi/2)
     local x1d, y1d = self.x1 + self.s*math.cos(self.angle + math.pi/2), self.y1 + self.s*math.sin(self.angle + math.pi/2)
     local x2u, y2u = self.x2 + self.s*math.cos(self.angle - math.pi/2), self.y2 + self.s*math.sin(self.angle - math.pi/2)

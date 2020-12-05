@@ -152,24 +152,62 @@ function rotatePointAroundPoint(px, py, angle, cx, cy)
 end
 
 function printCenteredText(text, x, y, font, color)
-    love.graphics.setColor(color or default_color)
+    love.graphics.setColor(color255To1(color or default_color))
     love.graphics.print(text, x - math.floor(font:getWidth(text)/2), y - math.floor(font:getHeight()/2))
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
 end
 
 function drawCenteredRectangle(fill_mode, x, y, w, h, color)
-    love.graphics.setColor(color)
+    love.graphics.setColor(color255To1(color))
     love.graphics.rectangle(fill_mode, x - w/2, y - h/2, w, h)
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
 end
 
 function drawRectangle(fill_mode, x, y, w, h, color)
-    love.graphics.setColor(color)
+    love.graphics.setColor(color255To1(color))
     love.graphics.rectangle(fill_mode, x, y, w, h)
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
 end
 
 function addColor(color, amount)
     local r, g, b = unpack(color)
     return {r + amount, g + amount, b + amount}
+end
+
+function color255To1(color, color2, color3, color4)
+    if type(color)=="number" then
+        if color4 then
+            return color / 255.0, color2 / 255.0, color3 / 255.0, color4 / 255.0
+        else
+            return color / 255.0, color2 / 255.0, color3 / 255.0, 255 / 255.0
+        end
+    else
+        local color_mod = {}
+        local i = 1
+        while color[i] do
+            color_mod[i] = color[i] / 255.0
+            i = i + 1
+        end
+        return color_mod
+    end
+    return color_mod
+end
+
+function color1To255(color, color2, color3, color4)
+    if type(color)=="number" then
+        if color4 then
+            return color * 255, color2 * 255, color3 * 255, color4 * 255
+        else
+            return color * 255, color2 * 255, color3 * 255, 255
+        end
+    else
+        local color_mod = {}
+        local i = 1
+        while color[i] do
+            color_mod[i] = color[i] * 255
+            i = i + 1
+        end
+        return color_mod
+    end
+    return color_mod
 end

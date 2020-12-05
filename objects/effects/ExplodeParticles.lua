@@ -51,9 +51,9 @@ function ExplodeParticles:draw()
         if self.active[i] then
             pushRotate(self.xs[i], self.ys[i], self.rs[i])
             love.graphics.setLineWidth(self.line_widths[i])
-            love.graphics.setColor(self.colors[i])
+            love.graphics.setColor(color255To1(self.colors[i]))
             love.graphics.line(self.xs[i] - self.ss[i], self.ys[i], self.xs[i] + self.ss[i], self.ys[i])
-            love.graphics.setColor(255, 255, 255)
+            love.graphics.setColor(color255To1(255, 255, 255))
             love.graphics.setLineWidth(1)
             love.graphics.pop()
         end

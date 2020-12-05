@@ -32,10 +32,10 @@ function ShapeEffect2:draw()
     if self.disappear then return end
 
     if self.first then
-        love.graphics.setColor(default_color)
+        love.graphics.setColor(color255To1(default_color))
         self:drawShape()
     elseif self.second then
-        love.graphics.setColor(self.color)
+        love.graphics.setColor(color255To1(self.color))
         self:drawShape()
     end
 end

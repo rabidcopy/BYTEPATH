@@ -22,8 +22,8 @@ end
 
 function RollerPool:draw()
     pushRotate(self.x, self.y, self.r)
-    love.graphics.setColor(hp_color)
+    love.graphics.setColor(color255To1(hp_color))
     love.graphics.rectangle('line', self.x - self.w/2, self.y - self.h/2, self.w, self.h)
-    love.graphics.setColor(255, 255, 255)
+    love.graphics.setColor(color255To1(255, 255, 255))
     love.graphics.pop()
 end

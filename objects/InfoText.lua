@@ -62,13 +62,13 @@ function InfoText:draw()
         end
 
         if self.background_colors[i] then
-      		love.graphics.setColor(self.background_colors[i])
+      		love.graphics.setColor(color255To1(self.background_colors[i]))
       		love.graphics.rectangle('fill', self.x + width, self.y - self.font:getHeight()/2, self.font:getWidth(self.characters[i]), self.font:getHeight())
       	end
-    	love.graphics.setColor(self.foreground_colors[i] or self.color or default_color)
+    	love.graphics.setColor(color255To1(self.foreground_colors[i] or self.color or default_color))
     	love.graphics.print(self.characters[i], self.x + width, self.y, 0, 1, 1, 0, self.font:getHeight()/2)
     end
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
 end
 
 function InfoText:destroy()

@@ -170,16 +170,16 @@ function ConsoleInputLine:draw()
         if self.characters[i].language == 'normal' then love.graphics.setFont(normal_font)
         elseif self.characters[i].language == 'arch' then love.graphics.setFont(arch_font) end
 
-        if self.characters[i].c == '{' then love.graphics.setColor(skill_point_color) end
-        if self.characters[i].c == '}' then love.graphics.setColor(default_color) end
-        if self.characters[i].c == '<' then love.graphics.setColor(ammo_color) end
-        if self.characters[i].c == '>' then love.graphics.setColor(default_color) end
-        if self.characters[i].c == ';' then love.graphics.setColor(skill_point_color) end
-        if self.characters[i].c == ',' then love.graphics.setColor(default_color) end
-        if self.characters[i].c == '@' then love.graphics.setColor(hp_color) end
-        if self.characters[i].c == '#' then love.graphics.setColor(default_color) end
-        if self.characters[i].c == '$' then love.graphics.setColor(boost_color) end
-        if self.characters[i].c == '%' then love.graphics.setColor(default_color) end
+        if self.characters[i].c == '{' then love.graphics.setColor(color255To1(skill_point_color)) end
+        if self.characters[i].c == '}' then love.graphics.setColor(color255To1(default_color)) end
+        if self.characters[i].c == '<' then love.graphics.setColor(color255To1(ammo_color)) end
+        if self.characters[i].c == '>' then love.graphics.setColor(color255To1(default_color)) end
+        if self.characters[i].c == ';' then love.graphics.setColor(color255To1(skill_point_color)) end
+        if self.characters[i].c == ',' then love.graphics.setColor(color255To1(default_color)) end
+        if self.characters[i].c == '@' then love.graphics.setColor(color255To1(hp_color)) end
+        if self.characters[i].c == '#' then love.graphics.setColor(color255To1(default_color)) end
+        if self.characters[i].c == '$' then love.graphics.setColor(color255To1(boost_color)) end
+        if self.characters[i].c == '%' then love.graphics.setColor(color255To1(default_color)) end
         if self.characters[i].c ~= '{' and self.characters[i].c ~= '}' and self.characters[i].c ~= '(' and self.characters[i].c ~= ')' and 
            self.characters[i].c ~= '<' and self.characters[i].c ~= '>' and self.characters[i].c ~= ';' and self.characters[i].c ~= ',' and
            self.characters[i].c ~= '@' and self.characters[i].c ~= '#' and self.characters[i].c ~= '$' and self.characters[i].c ~= '%' then
@@ -199,9 +199,9 @@ function ConsoleInputLine:draw()
 
     if self.console.input_line and self.console.input_line.id == self.id then
         local r, g, b = unpack(default_color)
-        love.graphics.setColor(r, g, b, 96)
+        love.graphics.setColor(color255To1(r, g, b, 96))
         if self.cursor_show then love.graphics.rectangle('fill', self.x + width, self.y + math.floor(normal_font:getHeight()/2), normal_font:getWidth('w'), normal_font:getHeight()) end
-        love.graphics.setColor(r, g, b, 255)
+        love.graphics.setColor(color255To1(r, g, b, 255))
         love.graphics.setShader()
     end
 end

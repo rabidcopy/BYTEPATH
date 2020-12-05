@@ -48,8 +48,8 @@ local resultname = "serialisation time in seconds"
 function love.load()
 	cases = love.filesystem.getDirectoryItems("cases")
 	state = 'select_case'
-	love.graphics.setBackgroundColor(255, 230, 220)
-	love.graphics.setColor(40, 30, 0)
+	love.graphics.setBackgroundColor(color255To1(255, 230, 220))
+	love.graphics.setColor(color255To1(40, 30, 0))
 	love.window.setTitle("Select a benchmark testcase")
 end
 
@@ -168,9 +168,9 @@ function love.draw()
 		for sername, result in pairs(results) do
 			love.graphics.print(sername, 20, i * 20)
 			if result == math.huge then
-				love.graphics.setColor(220, 30, 0)
+				love.graphics.setColor(color255To1(220, 30, 0))
 				love.graphics.rectangle('fill', 100, i * 20, 780 - 100, 18)
-				love.graphics.setColor(40, 30, 0)
+				love.graphics.setColor(color255To1(40, 30, 0))
 			else
 				love.graphics.rectangle('fill', 100, i * 20, (780 - 100) * (result - results_min) / (results_max - results_min), 18)
 			end

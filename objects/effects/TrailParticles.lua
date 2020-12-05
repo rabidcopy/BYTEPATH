@@ -35,9 +35,9 @@ end
 function TrailParticles:draw()
     for i = 1, 2000 do
         if self.active[i] then
-            love.graphics.setColor(self.colors[i])
+            love.graphics.setColor(color255To1(self.colors[i]))
             love.graphics.circle('fill', self.xs[i], self.ys[i], self.rs[i])
-            love.graphics.setColor(255, 255, 255)
+            love.graphics.setColor(color255To1(255, 255, 255))
         end
     end
 end

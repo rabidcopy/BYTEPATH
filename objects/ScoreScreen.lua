@@ -16,7 +16,7 @@ end
 function ScoreScreen:draw()
     love.graphics.setFont(self.font)
 
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
     love.graphics.print('DEVICE: ' .. device, gw/2, gh/2 - 30, 0, 1, 1, math.floor(self.font:getWidth('DEVICE: ' .. device)/2), 0)
     love.graphics.print('SCORE: ' .. score, gw/2, gh/2 - 20, 0, 1, 1, math.floor(self.font:getWidth('SCORE: ' .. score)/2), 0)
     love.graphics.print('HIGH SCORE: ' .. high_score, gw/2, gh/2 - 10, 0, 1, 1, math.floor(self.font:getWidth('HIGH SCORE: ' .. high_score)/2), 0)

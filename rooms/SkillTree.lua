@@ -243,9 +243,9 @@ end
 function SkillTree:draw()
     love.graphics.setCanvas(self.glitch_canvas)
     love.graphics.clear()
-        love.graphics.setColor(127, 127, 127)
+        love.graphics.setColor(color255To1(127, 127, 127))
         love.graphics.rectangle('fill', 0, 0, gw, gh)
-        love.graphics.setColor(255, 255, 255)
+        love.graphics.setColor(color255To1(255, 255, 255))
         self.area:drawOnly({'glitch'})
     love.graphics.setCanvas()
 
@@ -257,7 +257,7 @@ function SkillTree:draw()
         local grid_w, grid_h = 18000, 18000
         local grid_node_w, grid_node_h = 12, 12
         local grid_cluster_size = 5
-        love.graphics.setColor(255, 255, 255, 4)
+        love.graphics.setColor(color255To1(255, 255, 255, 4))
         love.graphics.line(0, -grid_h/2, 0, grid_h/2)
         local n_grid_w, n_grid_h = (grid_w/2)/grid_node_w, (grid_h/2)/grid_node_h
         local n_big_grid_w, n_big_grid_h = (grid_w/2)/(grid_cluster_size*grid_node_w), (grid_h/2)/(grid_cluster_size*grid_node_h)
@@ -265,18 +265,18 @@ function SkillTree:draw()
             love.graphics.line(0 - grid_cluster_size*grid_node_w*i, -grid_h/2, 0 - grid_cluster_size*grid_node_w*i, grid_h/2)
             love.graphics.line(0 + grid_cluster_size*grid_node_w*i, -grid_h/2, 0 + grid_cluster_size*grid_node_w*i, grid_h/2)
         end
-        love.graphics.setColor(255, 255, 255, 2)
+        love.graphics.setColor(color255To1(255, 255, 255, 2))
         for i = 1, n_grid_w do
             love.graphics.line(0 - grid_node_w*i, -grid_h/2, 0 - grid_node_w*i, grid_h/2)
             love.graphics.line(0 + grid_node_w*i, -grid_h/2, 0 + grid_node_w*i, grid_h/2)
         end
-        love.graphics.setColor(255, 255, 255, 4)
+        love.graphics.setColor(color255To1(255, 255, 255, 4))
         love.graphics.line(-grid_w/2, 0, grid_w/2, 0)
         for i = 1, n_big_grid_h do
             love.graphics.line(-grid_w/2, 0 - grid_cluster_size*grid_node_h*i, grid_w/2, 0 - grid_cluster_size*grid_node_h*i)
             love.graphics.line(-grid_w/2, 0 + grid_cluster_size*grid_node_h*i, grid_w/2, 0 + grid_cluster_size*grid_node_h*i)
         end
-        love.graphics.setColor(255, 255, 255, 2)
+        love.graphics.setColor(color255To1(255, 255, 255, 2))
         for i = 1, n_grid_h do
             love.graphics.line(-grid_w/2, 0 - grid_node_h*i, grid_w/2, 0 - grid_node_h*i)
             love.graphics.line(-grid_w/2, 0 + grid_node_h*i, grid_w/2, 0 + grid_node_h*i)
@@ -290,17 +290,17 @@ function SkillTree:draw()
         camera:detach()
 
         -- Skill points
-        love.graphics.setColor(skill_point_color)
+        love.graphics.setColor(color255To1(skill_point_color))
         love.graphics.print(skill_points .. 'SP', gw - 20, 28, 0, 1, 1, math.floor(self.font:getWidth(skill_points .. 'SP')/2), math.floor(self.font:getHeight()/2))
 
         -- Nodes
-        if #bought_node_indexes > max_tree_nodes then love.graphics.setColor(hp_color)
-        else love.graphics.setColor(default_color) end
+        if #bought_node_indexes > max_tree_nodes then love.graphics.setColor(color255To1(hp_color))
+        else love.graphics.setColor(color255To1(default_color)) end
         love.graphics.print(#bought_node_indexes .. '/' .. max_tree_nodes .. ' NODES BOUGHT', 10, 20, 0, 1, 1, 0, math.floor(self.font:getHeight()/2))
 
         -- Keys
         local r, g, b = unpack(background_color)
-        love.graphics.setColor(r, g, b, self.keys_alpha)
+        love.graphics.setColor(color255To1(r, g, b, self.keys_alpha))
         love.graphics.rectangle('fill', 10, gh - 15 - 3 - 18, 18, 18)
         love.graphics.rectangle('fill', 10 + 18 + 3, gh - 15 - 3 - 18, 18, 18)
         love.graphics.rectangle('fill', 10 + 36 + 6, gh - 15 - 3 - 18, 18, 18)
@@ -310,7 +310,7 @@ function SkillTree:draw()
         love.graphics.rectangle('fill', 10 + 36 + 6 + 18 + 3, gh - 15 - 3 - 18, 32, 18)
 
         local r, g, b = unpack(default_color)
-        love.graphics.setColor(r, g, b, self.keys_alpha)
+        love.graphics.setColor(color255To1(r, g, b, self.keys_alpha))
         love.graphics.rectangle('line', 10, gh - 15 - 3 - 18, 18, 18)
         love.graphics.rectangle('line', 10 + 18 + 3, gh - 15 - 3 - 18, 18, 18)
         love.graphics.rectangle('line', 10 + 36 + 6, gh - 15 - 3 - 18, 18, 18)
@@ -337,16 +337,16 @@ function SkillTree:draw()
         love.graphics.print('ZOOMIN', 10 + 9, gh - 15 - 6 - 36 - 9, 0, 1, 1, math.floor(font:getWidth('ZOOMIN')/2), math.floor(font:getHeight()/2))
         love.graphics.print('ZOOMOUT', 10 + 36 + 6 + 9, gh - 15 - 6 - 36 - 9, 0, 1, 1, math.floor(font:getWidth('ZOOMOUT')/2), math.floor(font:getHeight()/2))
 
-        love.graphics.setColor(255, 255, 255, 255)
+        love.graphics.setColor(color255To1(255, 255, 255, 255))
 
         -- Can't buy
         if self.cant_buy_error then
             local text = self.cant_buy_error
             local w = self.font:getWidth(text)
             local x, y = gw/2 - w/2 - 5, gh/2 - 12
-            love.graphics.setColor(hp_color)
+            love.graphics.setColor(color255To1(hp_color))
             love.graphics.rectangle('fill', x, y, w + 10, 24)
-            love.graphics.setColor(background_color)
+            love.graphics.setColor(color255To1(background_color))
             love.graphics.print(text, math.floor(x + 5), math.floor(y + 8))
         end
 
@@ -355,9 +355,9 @@ function SkillTree:draw()
         local text = 'CONSOLE'
         local w = self.font:getWidth(text)
         local x, y = gw - w - 15, 5
-        love.graphics.setColor(0, 0, 0, 222)
+        love.graphics.setColor(color255To1(0, 0, 0, 222))
         love.graphics.rectangle('fill', x, y, w + 10, 16) 
-        love.graphics.setColor(255, 255, 255, 255)
+        love.graphics.setColor(color255To1(255, 255, 255, 255))
         love.graphics.print(text, x + 5, y + 3)
         if pmx >= sx*x and pmx <= sx*(x + w + 10) and pmy >= sy*y and pmy <= sy*(y + 16) then love.graphics.rectangle('line', x, y, w + 10, 16) end
 
@@ -368,18 +368,18 @@ function SkillTree:draw()
             local w = self.font:getWidth(text)
 
             local x, y = 5, gh - 20
-            love.graphics.setColor(0, 0, 0, 222)
+            love.graphics.setColor(color255To1(0, 0, 0, 222))
             love.graphics.rectangle('fill', x, y, w + 10, 16) 
-            love.graphics.setColor(255, 255, 255, 255)
+            love.graphics.setColor(color255To1(255, 255, 255, 255))
             love.graphics.print(text, x + 5, y + 3)
             if pmx >= sx*x and pmx <= sx*(x + w + 10) and pmy >= sy*y and pmy <= sy*(y + 16) then love.graphics.rectangle('line', x, y, w + 10, 16) end
 
             local x = x + w + 10 + 5
             local text = 'Cancel'
             local w = self.font:getWidth(text)
-            love.graphics.setColor(0, 0, 0, 222)
+            love.graphics.setColor(color255To1(0, 0, 0, 222))
             love.graphics.rectangle('fill', x, y, w + 10, 16) 
-            love.graphics.setColor(255, 255, 255, 255)
+            love.graphics.setColor(color255To1(255, 255, 255, 255))
             love.graphics.print(text, x + 5, y + 3)
             if pmx >= sx*x and pmx <= sx*(x + w + 10) and pmy >= sy*y and pmy <= sy*(y + 16) then love.graphics.rectangle('line', x, y, w + 10, 16) end
 
@@ -411,25 +411,25 @@ function SkillTree:draw()
 
                 mx, my = mx/sx, my/sy
                 pushRotateScale(mx + (16 + max_text_width)/2, my + (font:getHeight() + (#stats/3)*font:getHeight())/2, 0, node.stats_rectangle_sx, node.stats_rectangle_sy)
-                love.graphics.setColor(0, 0, 0, 222)
+                love.graphics.setColor(color255To1(0, 0, 0, 222))
                 love.graphics.rectangle('fill', mx, my, 16 + max_text_width, font:getHeight() + (#stats/3)*font:getHeight())
-                love.graphics.setColor(skill_point_color)
+                love.graphics.setColor(color255To1(skill_point_color))
                 love.graphics.print(node.cost[node.size] .. 'SP', math.floor(mx + 16 + max_text_width - 16), math.floor(my + font:getHeight()), 
                 0, 1, 1, math.floor(self.font:getWidth(node.cost[node.size] .. 'SP')/2), math.floor(self.font:getHeight()/2))
                 -- Draw text
-                love.graphics.setColor(default_color)
+                love.graphics.setColor(color255To1(default_color))
                 for i = 1, #stats, 3 do
                     love.graphics.print(stats[i], math.floor(mx + 8), math.floor(my + font:getHeight()/2 + math.floor(i/3)*font:getHeight()))
                 end
                 love.graphics.pop()
             end
         end
-        love.graphics.setColor(default_color)
+        love.graphics.setColor(color255To1(default_color))
     love.graphics.setCanvas()
 
     love.graphics.setCanvas(self.temp_canvas)
     love.graphics.clear()
-        love.graphics.setColor(255, 255, 255)
+        love.graphics.setColor(color255To1(255, 255, 255))
         love.graphics.setBlendMode("alpha", "premultiplied")
         love.graphics.setShader(shaders.glitch)
         shaders.glitch:send('glitch_map', self.glitch_canvas)
@@ -440,7 +440,7 @@ function SkillTree:draw()
 
     love.graphics.setCanvas(self.final_canvas)
     love.graphics.clear()
-        love.graphics.setColor(255, 255, 255)
+        love.graphics.setColor(color255To1(255, 255, 255))
         love.graphics.setBlendMode("alpha", "premultiplied")
         love.graphics.setShader(shaders.rgb_shift)
         shaders.rgb_shift:send('amount', {random(-self.rgb_shift_mag, self.rgb_shift_mag)/gw, random(-self.rgb_shift_mag, self.rgb_shift_mag)/gh})
@@ -455,7 +455,7 @@ function SkillTree:draw()
         shaders.distort:send('horizontal_fuzz', 0.2*(distortion/10))
         shaders.distort:send('rgb_offset', 0.2*(distortion/10))
     end
-    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.setColor(color255To1(255, 255, 255, 255))
     love.graphics.setBlendMode('alpha', 'premultiplied')
     love.graphics.draw(self.final_canvas, 0, 0, 0, sx, sy)
     love.graphics.setBlendMode('alpha')

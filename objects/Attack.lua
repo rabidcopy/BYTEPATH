@@ -40,12 +40,12 @@ end
 
 function Attack:draw()
     pushRotateScale(self.x, self.y, 0, random(0.95, 1.05), random(0.95, 1.05))
-    love.graphics.setColor(attacks[self.attack].color)
-    if self.attack == 'Spread' or self.attack == 'Rapid' then love.graphics.setColor(table.random(all_colors)) end
-    if self.attack == 'Bounce' then love.graphics.setColor(table.random(default_colors)) end
+    love.graphics.setColor(color255To1(attacks[self.attack].color))
+    if self.attack == 'Spread' or self.attack == 'Rapid' then love.graphics.setColor(color255To1(table.random(all_colors))) end
+    if self.attack == 'Bounce' then love.graphics.setColor(color255To1(table.random(default_colors))) end
     love.graphics.print(attacks[self.attack].abbreviation, self.x, self.y, 0, 1, 1, math.floor(self.font:getWidth(attacks[self.attack].abbreviation)/2), math.floor(self.font:getHeight()/2))
     draft:rhombus(self.x, self.y, 3*self.w, 3*self.w, 'line')
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
     draft:rhombus(self.x, self.y, 2.5*self.w, 2.5*self.w, 'line')
     love.graphics.pop()
 end

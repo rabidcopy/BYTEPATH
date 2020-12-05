@@ -15,7 +15,7 @@ end
 
 function ShootEffect:draw()
     pushRotate(self.x, self.y, self.parent.r + math.pi/4)
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
     love.graphics.rectangle('fill', self.x - self.w/2, self.y - self.w/2, self.w, self.w)
     love.graphics.pop()
 end

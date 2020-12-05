@@ -55,8 +55,8 @@ function DisplayModule:draw()
 
     local width = self.selection_widths[self.selection_index]
     local r, g, b = unpack(hp_color)
-    love.graphics.setColor(r, g, b, 128)
+    love.graphics.setColor(color255To1(r, g, b, 128))
     local x_offset = self.console.font:getWidth('    ')
     love.graphics.rectangle('fill', 8 + x_offset - 2, self.y + self.selection_index*12 + 17 + 12, width + 4, self.console.font:getHeight())
-    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.setColor(color255To1(255, 255, 255, 255))
 end

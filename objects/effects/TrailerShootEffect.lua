@@ -15,7 +15,7 @@ end
 
 function TrailerShootEffect:draw()
     pushRotate(self.x, self.y, ((self.parent and self.parent.r) or 0) + math.pi/4)
-    love.graphics.setColor(hp_color)
+    love.graphics.setColor(color255To1(hp_color))
     love.graphics.rectangle('fill', self.x - self.w/2, self.y - self.w/2, self.w, self.w)
     love.graphics.pop()
 end

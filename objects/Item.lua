@@ -30,10 +30,10 @@ end
 
 function Item:draw()
     pushRotateScale(self.x, self.y, 0, random(0.95, 1.05), random(0.95, 1.05))
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
     love.graphics.print('I', self.x, self.y, 0, 1, 1, math.floor(self.font:getWidth('I')/2), math.floor(self.font:getHeight()/2))
     draft:rhombus(self.x, self.y, 3*self.w, 3*self.w, 'line')
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
     draft:rhombus(self.x, self.y, 2.5*self.w, 2.5*self.w, 'line')
     love.graphics.pop()
 

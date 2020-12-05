@@ -27,12 +27,12 @@ function Boost:update(dt)
 end
 
 function Boost:draw()
-    love.graphics.setColor(boost_color)
+    love.graphics.setColor(color255To1(boost_color))
     pushRotate(self.x, self.y, self.shape._rotation)
     draft:rhombus(self.x, self.y, 1.5*self.w, 1.5*self.h, 'line')
     draft:rhombus(self.x, self.y, 0.5*self.w, 0.5*self.h, 'fill')
     love.graphics.pop()
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
 end
 
 function Boost:destroy()

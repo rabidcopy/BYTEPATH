@@ -23,15 +23,15 @@ end
 function Paused:draw()
     love.graphics.setFont(self.font)
 
-    love.graphics.setColor(8, 8, 8, 255)
+    love.graphics.setColor(color255To1(8, 8, 8, 255))
     love.graphics.rectangle('fill', gw/2 - 68, gh/2 - 8, 64, 16) 
-    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.setColor(color255To1(255, 255, 255, 255))
     if self.resume then love.graphics.rectangle('line', gw/2 - 68, gh/2 - 8, 64, 16) end
     love.graphics.print('RESUME', gw/2 - 4 - 32, gh/2 - 6, 0, 1, 1, math.floor(self.font:getWidth('RESUME')/2))
     
-    love.graphics.setColor(8, 8, 8, 255)
+    love.graphics.setColor(color255To1(8, 8, 8, 255))
     love.graphics.rectangle('fill', gw/2 + 4, gh/2 - 8, 64, 16) 
-    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.setColor(color255To1(255, 255, 255, 255))
     if not self.resume then love.graphics.rectangle('line', gw/2 + 4, gh/2 - 8, 64, 16) end
     love.graphics.print('CONSOLE', gw/2 + 4 + 32, gh/2 - 6, 0, 1, 1, math.floor(self.font:getWidth('CONSOLE')/2))
 end

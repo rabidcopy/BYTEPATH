@@ -35,11 +35,11 @@ function Ammo:update(dt)
 end
 
 function Ammo:draw()
-    love.graphics.setColor(ammo_color)
+    love.graphics.setColor(color255To1(ammo_color))
     pushRotate(self.x, self.y, self.r)
     draft:rhombus(self.x, self.y, self.w, self.h, 'line')
     love.graphics.pop()
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
 end
 
 function Ammo:destroy()

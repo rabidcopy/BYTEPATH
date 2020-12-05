@@ -253,25 +253,25 @@ end
 function Achievements:draw()
     love.graphics.setCanvas(self.glitch_canvas)
     love.graphics.clear()
-        love.graphics.setColor(127, 127, 127)
+        love.graphics.setColor(color255To1(127, 127, 127))
         love.graphics.rectangle('fill', 0, 0, gw, gh)
-        love.graphics.setColor(255, 255, 255)
+        love.graphics.setColor(color255To1(255, 255, 255))
         self.area:drawOnly({'glitch'})
     love.graphics.setCanvas()
 
     love.graphics.setFont(self.font)
     love.graphics.setCanvas(self.main_canvas)
         love.graphics.clear()
-        love.graphics.setColor(default_color)
+        love.graphics.setColor(color255To1(default_color))
         love.graphics.print('~ ACHIEVEMENTS:', 8, 10)
 
         local pmx, pmy = love.mouse.getPosition()
         local text = 'CONSOLE'
         local w = self.font:getWidth(text)
         local x, y = gw - w - 15, 5
-        love.graphics.setColor(0, 0, 0, 222)
+        love.graphics.setColor(color255To1(0, 0, 0, 222))
         love.graphics.rectangle('fill', x, y, w + 10, 16) 
-        love.graphics.setColor(255, 255, 255, 255)
+        love.graphics.setColor(color255To1(255, 255, 255, 255))
         love.graphics.print(text, x + 5, y + 3)
         if pmx >= sx*x and pmx <= sx*(x + w + 10) and pmy >= sy*y and pmy <= sy*(y + 16) then love.graphics.rectangle('line', x, y, w + 10, 16) end
 
@@ -284,7 +284,7 @@ function Achievements:draw()
 
     love.graphics.setCanvas(self.final_canvas)
     love.graphics.clear()
-        love.graphics.setColor(255, 255, 255)
+        love.graphics.setColor(color255To1(255, 255, 255))
         love.graphics.setBlendMode("alpha", "premultiplied")
         love.graphics.setShader(shaders.glitch)
         shaders.glitch:send('glitch_map', self.glitch_canvas)
@@ -299,7 +299,7 @@ function Achievements:draw()
         shaders.distort:send('horizontal_fuzz', 0.2*(distortion/10))
         shaders.distort:send('rgb_offset', 0.2*(distortion/10))
     end
-    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.setColor(color255To1(255, 255, 255, 255))
     love.graphics.setBlendMode('alpha', 'premultiplied')
     love.graphics.draw(self.final_canvas, 0, 0, 0, sx, sy)
     love.graphics.setBlendMode('alpha')
@@ -319,7 +319,7 @@ function Achievements:drawAchievement(x, y, achievement_name, active)
     if achievement_name:find('100K') then name = '100K'; color = boost_color end
     if achievement_name:find('500K') then name = '500K'; color = hp_color end
     if achievement_name:find('1KK') then name = '1KK'; color = skill_point_color end
-    if achievements[achievement_name] then love.graphics.setColor(color) end
+    if achievements[achievement_name] then love.graphics.setColor(color255To1(color)) end
     love.graphics.print(name, x, y, 0, 2, 2, math.floor(self.font:getWidth(name)/2), math.floor(self.font:getHeight()/2))
 
     y = y + 28 
@@ -335,7 +335,7 @@ function Achievements:drawAchievement(x, y, achievement_name, active)
     if achievement_name:find('Wisp') then device = 'Wisp' end
     if device == '' then goto continue end
     y = y + self.y_offsets[device]
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
     pushRotateScale(x, y, -math.pi/2)
     for _, vertice_group in ipairs(self.device_vertices[device].vertice_groups) do
         local points = fn.map(vertice_group, function(k, v) 
@@ -350,11 +350,11 @@ function Achievements:drawAchievement(x, y, achievement_name, active)
 
     if achievement_name == 'Reroll Build' then
         love.graphics.line(x - 16 + 4, y - 8, x + 4, y + 8)
-        love.graphics.setColor(background_color)
+        love.graphics.setColor(color255To1(background_color))
         love.graphics.rectangle('fill', x - 4 - 16 + 4, y - 4 - 8, 8, 8)
         love.graphics.rectangle('fill', x - 4 + 4, y - 4 + 8, 8, 8)
         love.graphics.rectangle('fill', x - 4 - 12 + 12 + 4, y - 4 - 8, 16, 8)
-        love.graphics.setColor(default_color)
+        love.graphics.setColor(color255To1(default_color))
         love.graphics.rectangle('line', x - 4 - 16 + 4, y - 4 - 8, 8, 8)
         love.graphics.rectangle('line', x - 4 + 4, y - 4 + 8, 8, 8)
         love.graphics.rectangle('line', x - 4 - 12 + 12 + 4, y - 4 - 8, 16, 8)
@@ -363,46 +363,46 @@ function Achievements:drawAchievement(x, y, achievement_name, active)
         love.graphics.line(x - 16, y - 8, x + 16, y - 8)
         love.graphics.line(x - 16, y - 8, x, y + 8)
         love.graphics.line(x + 16, y - 8, x, y + 8)
-        love.graphics.setColor(background_color)
+        love.graphics.setColor(color255To1(background_color))
         love.graphics.rectangle('fill', x - 4 - 16, y - 4 - 8, 8, 8)
         love.graphics.rectangle('fill', x - 4 + 16, y - 4 - 8, 8, 8)
         love.graphics.rectangle('fill', x - 4, y - 4 + 8, 8, 8)
-        love.graphics.setColor(default_color)
+        love.graphics.setColor(color255To1(default_color))
         love.graphics.rectangle('line', x - 4 - 16, y - 4 - 8, 8, 8)
         love.graphics.rectangle('line', x - 4 + 16, y - 4 - 8, 8, 8)
         love.graphics.rectangle('line', x - 4, y - 4 + 8, 8, 8)
 
     elseif achievement_name == 'Reroll Classes' then
-        love.graphics.setColor(background_color)
+        love.graphics.setColor(color255To1(background_color))
         love.graphics.rectangle('fill', x - 4 - 12, y - 4 - 4, 16, 8)
         love.graphics.rectangle('fill', x - 4 + 4, y - 4 - 4, 16, 8)
         love.graphics.rectangle('fill', x - 4 + 4, y - 4 + 4, 16, 8)
-        love.graphics.setColor(default_color)
+        love.graphics.setColor(color255To1(default_color))
         love.graphics.rectangle('line', x - 4 - 12, y - 4 - 4, 16, 8)
         love.graphics.rectangle('line', x - 4 + 4, y - 4 - 4, 16, 8)
         love.graphics.rectangle('line', x - 4 + 4, y - 4 + 4, 16, 8)
 
     elseif achievement_name == 'Escape' then
-        love.graphics.setColor(default_color)
+        love.graphics.setColor(color255To1(default_color))
         love.graphics.print('escape', x - 1, y, 0, 1, 1, math.floor(self.font:getWidth('escape')/2), math.floor(self.font:getHeight()/2))
         local r, g, b = unpack(default_color)
-        love.graphics.setColor(r, g, b, 96)
+        love.graphics.setColor(color255To1(r, g, b, 96))
         love.graphics.rectangle('fill', x + 16 - math.floor(self.font:getWidth('w')/2), y - math.floor(self.font:getHeight()/2), self.font:getWidth('w'), self.font:getHeight())
-        love.graphics.setColor(r, g, b, 255)
+        love.graphics.setColor(color255To1(r, g, b, 255))
     end
 
-    love.graphics.setColor(default_color)
+    love.graphics.setColor(color255To1(default_color))
 
     if active then
         y = y + 36
         if achievements[achievement_name] then 
-            love.graphics.setColor(ammo_color)
+            love.graphics.setColor(color255To1(ammo_color))
             love.graphics.print('UNLOCKED', x, y, 0, 1, 1, math.floor(self.font:getWidth('UNLOCKED')/2), math.floor(self.font:getHeight()/2))
         else 
-            love.graphics.setColor(hp_color)
+            love.graphics.setColor(color255To1(hp_color))
             love.graphics.print('LOCKED', x, y, 0, 1, 1, math.floor(self.font:getWidth('LOCKED')/2), math.floor(self.font:getHeight()/2)) 
         end
-        love.graphics.setColor(default_color)
+        love.graphics.setColor(color255To1(default_color))
 
         y = y + 16
         love.graphics.print(achievement_descriptions[achievement_name], x, y, 0, 1, 1, math.floor(self.font:getWidth(achievement_descriptions[achievement_name])/2), math.floor(self.font:getHeight()/2))
