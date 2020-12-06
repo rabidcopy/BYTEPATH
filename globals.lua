@@ -115,6 +115,9 @@ class_colors = {
 
 -- Achievements
 function unlockAchievement(achievement_name)
+    if Gamerzilla then
+        Gamerzilla.setTrophy(achievement_name)
+    end
     if achievements[achievement_name] then return end
     achievements[achievement_name] = true
     if Steam then

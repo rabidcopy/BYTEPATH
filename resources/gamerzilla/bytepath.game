@@ -1,0 +1,288 @@
+{
+	"shortname": "bytepath",
+	"name": "BYTEPATH",
+	"image": "gamerzilla/bytepath.png",
+	"version": "1",
+	"trophy": [
+		{
+			"trophy_name": "Reroll Skills",
+			"trophy_desc": "Reroll all 80 points spent in the passive skill tree",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/Reroll_Skills.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "Reroll Classes",
+			"trophy_desc": "Reroll all 9 classes bought",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/Reroll_Classes.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "Reroll Build",
+			"trophy_desc": "Reroll all 80 points spent in the passive skill tree and all 9 classes bought",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/Reroll_Build.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "Escape",
+			"trophy_desc": "Beat the game and escape the terminal",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/Escape.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "10K Fighter",
+			"trophy_desc": "Reach 10K score with the Fighter device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/10K_Fighter.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "10K Crusader",
+			"trophy_desc": "Reach 10K score with the Crusader device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/10K_Crusader.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "10K Rogue",
+			"trophy_desc": "Reach 10K score with the Rogue device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/10K_Rogue.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "10K Bit Hunter",
+			"trophy_desc": "Reach 10K score with the Bit Hunter device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/10K_Bit_Hunter.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "50K Sentinel",
+			"trophy_desc": "Reach 50K score with the Sentinel device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/50K_Sentinel.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "50K Striker",
+			"trophy_desc": "Reach 50K score with the Striker device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/50K_Striker.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "50K Nuclear",
+			"trophy_desc": "Reach 50K score with the Nuclear device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/50K_Nuclear.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "50K Cycler",
+			"trophy_desc": "Reach 50K score with the Cycler device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/50K_Cycler.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "50K Wisp",
+			"trophy_desc": "Reach 50K score with the Wisp device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/50K_Wisp.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "100K Fighter",
+			"trophy_desc": "Reach 100K score with the Fighter device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/100K_Fighter.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "100K Crusader",
+			"trophy_desc": "Reach 100K score with the Crusader device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/100K_Crusader.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "100K Rogue",
+			"trophy_desc": "Reach 100K score with the Rogue device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/100K_Rogue.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "100K Bit Hunter",
+			"trophy_desc": "Reach 100K score with the Bit Hunter device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/100K_Bit_Hunter.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "100K Sentinel",
+			"trophy_desc": "Reach 100K score with the Sentinel device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/100K_Sentinel.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "100K Striker",
+			"trophy_desc": "Reach 100K score with the Striker device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/100K_Striker.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "100K Nuclear",
+			"trophy_desc": "Reach 100K score with the Nuclear device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/100K_Nuclear.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "100K Cycler",
+			"trophy_desc": "Reach 100K score with the Cycler device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/100K_Cycler.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "100K Wisp",
+			"trophy_desc": "Reach 100K score with the Wisp device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/100K_Wisp.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "500K Fighter",
+			"trophy_desc": "Reach 500K score with the Fighter device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/500K_Fighter.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "500K Crusader",
+			"trophy_desc": "Reach 500K score with the Crusader device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/500K_Crusader.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "500K Rogue",
+			"trophy_desc": "Reach 500K score with the Rogue device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/500K_Rogue.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "500K Bit Hunter",
+			"trophy_desc": "Reach 500K score with the Bit Hunter device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/500K_Bit_Hunter.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "500K Sentinel",
+			"trophy_desc": "Reach 500K score with the Sentinel device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/500K_Sentinel.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "500K Striker",
+			"trophy_desc": "Reach 500K score with the Striker device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/500K_Striker.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "500K Nuclear",
+			"trophy_desc": "Reach 500K score with the Nuclear device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/500K_Nuclear.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "500K Cycler",
+			"trophy_desc": "Reach 500K score with the Cycler device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/500K_Cycler.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "500K Wisp",
+			"trophy_desc": "Reach 500K score with the Wisp device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/500K_Wisp.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "1KK Fighter",
+			"trophy_desc": "Reach 1KK score with the Fighter device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/1KK_Fighter.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "1KK Crusader",
+			"trophy_desc": "Reach 1KK score with the Crusader device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/1KK_Crusader.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "1KK Rogue",
+			"trophy_desc": "Reach 1KK score with the Rogue device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/1KK_Rogue.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "1KK Bit Hunter",
+			"trophy_desc": "Reach 1KK score with the Bit Hunter device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/1KK_Bit_Hunter.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "1KK Sentinel",
+			"trophy_desc": "Reach 1KK score with the Sentinel device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/1KK_Sentinel.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "1KK Striker",
+			"trophy_desc": "Reach 1KK score with the Striker device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/1KK_Striker.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "1KK Nuclear",
+			"trophy_desc": "Reach 1KK score with the Nuclear device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/1KK_Nuclear.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "1KK Cycler",
+			"trophy_desc": "Reach 1KK score with the Cycler device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/1KK_Cycler.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		},
+		{
+			"trophy_name": "1KK Wisp",
+			"trophy_desc": "Reach 1KK score with the Wisp device",
+			"max_progress": "0",
+			"trueimage": "gamerzilla/1KK_Wisp.png",
+			"falseimage": "gamerzilla/notachieved.png"
+		}
+	]
+}

@@ -151,7 +151,7 @@ end
 function playRandomSong()
     if currently_playing_song then currently_playing_song:stop() end
     for i, source in ipairs(playing_sources) do
-        if source.source:isStopped() then
+        if not source.source:isPlaying() then
             table.remove(playing_sources, i)
         end
     end

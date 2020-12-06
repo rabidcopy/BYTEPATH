@@ -27,6 +27,36 @@ require 'utils'
 require 'globals'
 require 'tree'
 
+function isModuleAvailable(name)
+    if package.loaded[name] then
+        return true
+    else
+        for _, searcher in ipairs(package.searchers or package.loaders) do
+            local loader = searcher(name)
+            if type(loader) == 'function' then
+                package.preload[name] = loader
+                return true
+            end
+        end
+        return false
+    end
+end
+
+USING_GAMERZILLA = true
+for i, cmd in ipairs(arg) do
+    if cmd == "--no-gamerzilla" then
+        USING_GAMERZILLA = false
+    end
+end
+if not isModuleAvailable("luagamerzilla") then
+    USING_GAMERZILLA = false
+end
+if USING_GAMERZILLA then
+    Gamerzilla = require "luagamerzilla"
+    Gamerzilla.start(false, love.filesystem.getSaveDirectory());
+    Gamerzilla.setGameFromFile("resources/gamerzilla/bytepath.game", "resources/");
+end
+
 function love.load()
     time = 0
     start_time = os.time()
@@ -199,6 +229,7 @@ end
 
 function love.quit()
     save()
+    if USING_GAMERZILLA then Gamerzilla.quit() end
     -- Steam already tracks how long each player plays for and since this is the only thing I'm tracking it's unnecessary to run a server for only that info
     -- sendDataToServer(binser.serialize({id = id, duration = os.difftime(os.time(), start_time), start_date = start_date, end_date = os.date("*t")}))
 end
