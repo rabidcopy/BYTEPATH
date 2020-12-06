@@ -30,3 +30,15 @@ A full tutorial where the game is built from scratch is available [here](https:/
 ### License
 
 All assets have their specific licenses and they are linked to in the game's credits. All code is under the MIT license.
+
+AIRGLOW music is licensed under CC-BY-3.0
+https://airglow-strat.bandcamp.com/album/airglow-memory-bank
+
+Anonymous.ttf is licensed under Open Font License.
+https://www.marksimonson.com/fonts/view/anonymous-pro
+
+Arch.ttf is Public Domain.
+http://www.pentacom.jp/pentacom/bitfontmaker2/gallery/?id=612
+
+m5x7.ttf is free to use but attribution appreciated.
+https://managore.itch.io/m5x7
