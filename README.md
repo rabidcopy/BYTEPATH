@@ -57,18 +57,31 @@ menu_error.ogg was created by KorGround and is licensed under CC-BY-3.0
 https://freesound.org/people/KorGround/sounds/344687/
 
 Sound assets from freesounds.org are probably CC0 or CC-BY-3.0. The site allows CC-BY-NC-3.0 but it seems unlikely the commercial game included any of those. Given that the sounds have probably been converted to ogg and all have been renamed it would be difficult to track down the originals.
+
 fins: https://freesound.org/people/Leszek_Szary/
+
 jeckkech: https://freesound.org/people/jeckkech/
+
 josepharaoh99: https://freesound.org/people/josepharaoh99/
+
 NSStudios: https://freesound.org/people/nsstudios/
+
 TreasureSounds: https://freesound.org/people/TreasureSounds/
+
 TheDweebMan: https://freesound.org/people/TheDweebMan/
+
 LittleRobotSoundFactory: https://freesound.org/people/LittleRobotSoundFactory/
+
 NenadSimic: https://freesound.org/people/NenadSimic/
+
 DrMinky: https://freesound.org/people/DrMinky/
+
 pyzaist: https://freesound.org/people/pyzaist/
+
 CGEffex: https://freesound.org/people/CGEffex/
+
 broumbroum: https://freesound.org/people/broumbroum/
 
 Not sure why this is in credits
+
 GameAudio: https://www.gameaudio101.com/
