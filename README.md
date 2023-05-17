@@ -17,7 +17,17 @@ A replayable arcade shooter with a focus on build theorycrafting. Use a massive 
 
 ### Running
 
-Download this repository, `cd` into it and then run `love/love.exe --console .`. If you're on Linux then check [this comment](https://www.reddit.com/r/linux_gaming/comments/hlwzjn/bytepath_a_replayable_arcade_shooter_with_a_focus/fx2j1ss/) on reddit which goes over all needed changes to make it run from a Linux machine.
+Note: If I can stick to this long enough I'll start doing releases
+
+#### Windows
+
+???
+
+#### Linux
+
+1. install [LÖVE](https://repology.org/project/love/versions) from your distro's repositories or use the latest [appimage](https://github.com/love2d/love/releases)
+2. clone this repo
+3. cd to where you've cloned the repo and run `love .` (or just run `love /path/to/repo/`)
 
 ---
 
