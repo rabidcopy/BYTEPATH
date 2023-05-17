@@ -1,7 +1,3 @@
-Steam = nil
--- require 'libraries/steamworks'
-if type(Steam) == 'boolean' then Steam = nil end
-
 Object = require 'libraries/classic/classic'
 Timer = require 'libraries/enhanced_timer/EnhancedTimer'
 Input = require 'libraries/boipushy/Input'
@@ -55,6 +51,43 @@ if USING_GAMERZILLA then
     Gamerzilla = require "luagamerzilla"
     Gamerzilla.start(false, love.filesystem.getSaveDirectory());
     Gamerzilla.setGameFromFile("resources/gamerzilla/bytepath.game", "resources/");
+end
+
+function isSteamAPIAvailable()
+	currentOS = love.system.getOS()
+
+	if currentOS == "Windows" then
+		-- check for steam_api.dll in the Present Working Directory
+		oldDLL, _ = io.open('steam_api.dll', rb)
+		if oldDLL ~= nil then
+			io.close(oldDLL)
+			return true
+		else
+			-- check for steam_api64.dll in the Present Working Directory
+			newDLL, _ = io.open('steam_api64.dll', rb)
+			if newDLL ~= nil then
+				io.close(newDLL)
+				return true
+			end
+		end
+	elseif currentOS == "Linux" then
+		-- check for libsteam_api.so in the Present Working Directory
+		apiDotSo, _ = io.open('libsteam_api.so', rb)
+		if apiDotSo ~= nil then
+			io.close(apiDotSo)
+			return true
+		end
+	else
+		-- I don't know what the steam_api library is named on "OS X"
+		return false
+	end
+end
+
+if isSteamAPIAvailable() then
+	Steam = require 'libraries/steamworks'
+	if type(Steam) == 'boolean' then Steam = nil end
+else
+	Steam = nil
 end
 
 function love.load()
