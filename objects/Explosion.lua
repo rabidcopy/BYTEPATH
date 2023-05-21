@@ -11,9 +11,7 @@ function Explosion:new(area, x, y, opts)
     if current_room.player.projectiles_explosions then
         self.timer:tween(0.1, self, {w = w*current_room.player.area_multiplier}, 'in-out-cubic', function()
             camera:shake(w/24, 60, (w/48)*0.4)
-            for i = 1, love.math.random(8, 12) do 
-                current_room.explode_particles:add(self.x, self.y, (w/48)*random(150, 300), random(6, 10), attacks[current_room.player.attack].color)
-            end
+			current_room.explode_particles:add(self.x, self.y, (w/48)*random(150, 300), random(6, 10), attacks[current_room.player.attack].color, love.math.random(8, 12))
             self.timer:tween(0.20, self, {w = 0}, 'in-out-cubic', function() self.dead = true end)
         end)
 
@@ -30,7 +28,7 @@ function Explosion:new(area, x, y, opts)
     else
         self.timer:tween(0.1, self, {w = w*current_room.player.area_multiplier}, 'in-out-cubic', function()
             camera:shake(w/48, 60, (w/48)*0.4)
-            for i = 1, love.math.random(8, 12) do current_room.explode_particles:add(self.x, self.y, (w/48)*random(150, 300), random(6, 10), self.color) end
+            current_room.explode_particles:add(self.x, self.y, (w/48)*random(150, 300), random(6, 10), self.color, love.math.random(8, 12))
             self.timer:tween(0.20, self, {w = 0}, 'in-out-cubic', function() self.dead = true end)
         end)
 

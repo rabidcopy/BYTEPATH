@@ -47,7 +47,13 @@ function Ammo:destroy()
 end
 
 function Ammo:die()
-    self.dead = true
-    for i = 1, love.math.random(4, 8) do self.area.room.explode_particles:add(self.x, self.y, nil, 3, ammo_color) end
-    self.area:addGameObject('AmmoEffect', self.x, self.y, {color = ammo_color, w = self.w, h = self.h})
+	self.dead = true
+
+	self.area.room.explode_particles:add(self.x, self.y, nil, 3, ammo_color, love.math.random(4, 8))
+
+	self.area:addGameObject("AmmoEffect", self.x, self.y, {
+		color = ammo_color,
+		w = self.w,
+		h = self.h
+	})
 end
