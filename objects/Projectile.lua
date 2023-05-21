@@ -31,7 +31,7 @@ function Projectile:new(area, x, y, opts)
         self.damage = 150
         self.timer:every(0.02, function()
             local r = Vector.angle(self.vx, self.vy)
-            self.area.room.trail_particles:add(self.x - 1.0*self.s*math.cos(r), self.y - 1.0*self.s*math.sin(r), random(1, 3), self.color, random(0.1, 0.15))
+            self.area.room.trail_particles:add(self.x - 1.0*self.s*math.cos(r), self.y - 1.0*self.s*math.sin(r), self.attack)
         end)
         self.v = self.v*current_room.player.homing_speed_multiplier
         self.vx, self.vy = self.v*math.cos(self.r), self.v*math.sin(self.r)
@@ -95,20 +95,20 @@ function Projectile:new(area, x, y, opts)
     elseif self.attack == '2Split' then
         self.timer:every(0.02, function()
             local r = Vector.angle(self.vx, self.vy)
-            self.area.room.trail_particles:add(self.x - 1.0*self.s*math.cos(r), self.y - 1.0*self.s*math.sin(r), random(1, 3), self.color, random(0.1, 0.15))
+            self.area.room.trail_particles:add(self.x - 1.0*self.s*math.cos(r), self.y - 1.0*self.s*math.sin(r), self.attack)
         end)
 
     elseif self.attack == '4Split' then
         self.timer:every(0.02, function()
             local r = Vector.angle(self.vx, self.vy)
-            self.area.room.trail_particles:add(self.x - 1.0*self.s*math.cos(r), self.y - 1.0*self.s*math.sin(r), random(1, 3), self.color, random(0.1, 0.15))
+            self.area.room.trail_particles:add(self.x - 1.0*self.s*math.cos(r), self.y - 1.0*self.s*math.sin(r), self.attack)
         end)
 
     elseif self.attack == 'Explode' then
         self.damage = 200
         self.timer:every(0.02, function()
             local r = Vector.angle(self.vx, self.vy)
-            self.area.room.trail_particles:add(self.x - 1.0*self.s*math.cos(r), self.y - 1.0*self.s*math.sin(r), random(1, 3), self.color, random(0.1, 0.15))
+            self.area.room.trail_particles:add(self.x - 1.0*self.s*math.cos(r), self.y - 1.0*self.s*math.sin(r), self.attack)
         end)
     end
 
