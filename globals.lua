@@ -83,8 +83,11 @@ function setTransientGlobals()
     rank = 1
     score = 0
     found_keys = {0, 0, 0, 0, 0, 0, 0, 0}
-    if loop > 0 then max_tree_nodes = math.min(max_tree_nodes + 5*loop, 100)
-    else max_tree_nodes = 80 end
+	if loop > 0 then
+		max_tree_nodes = math.min(80 + 5 * loop, 100)
+	else
+		max_tree_nodes = 80
+	end
     spent_sp = 0
     keys = {}; for i = 1, 8 do keys[i] = {address = KEY(), value = KEY()} end 
     command_history = {}

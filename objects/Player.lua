@@ -440,217 +440,330 @@ function Player:update(dt)
     Player.super.update(self, dt)
 
     -- Stat boosts
-    if self.inside_haste_area then self.aspd_multiplier:increase(100) end
-    if self.aspd_boosting then self.aspd_multiplier:increase(100) end
-    if self.mvspd_boosting then self.mvspd_multiplier:increase(50) end
-    if self.pspd_boosting then self.pspd_multiplier:increase(50) end
-    if self.pspd_inhibiting then self.pspd_multiplier:decrease(50) end
-    if self.cycle_boosting then self.cycle_multiplier:increase(200) end
-    if self.inside_roller_pool then self.mvspd_multiplier:decrease(150) end
+	-- 100% increased attack speed while inside haste area
+    if self.inside_haste_area then
+		self.aspd_multiplier:increase(100)
+	end
+
+	-- 100% increased attack speed temporary stat boost
+    if self.aspd_boosting then
+		self.aspd_multiplier:increase(100)
+	end
+
+	-- 50% increased movement speed temporary stat boost
+    if self.mvspd_boosting then
+		self.mvspd_multiplier:increase(50)
+	end
+
+	-- 50% increased projectile speed temporary stat boost
+    if self.pspd_boosting then
+		self.pspd_multiplier:increase(50)
+	end
+
+	-- 50% reduced projectile speed temporary stat boost
+    if self.pspd_inhibiting then
+		self.pspd_multiplier:decrease(50)
+	end
+
+	-- 200% increased cycle speed temporary stat boost or while boosting
+    if self.cycle_boosting then
+		self.cycle_multiplier:increase(200)
+	end
+
+	-- 150% reduced movement speed while inside roller pool
+    if self.inside_roller_pool then
+		self.mvspd_multiplier:decrease(150)
+	end
     self.inside_roller_pool = false
-    if self.rampage then
-        if self.rampage_counter >= 10 then
-            self.aspd_multiplier:increase(math.floor(self.rampage_counter/10))
-            self.pspd_multiplier:increase(math.floor(self.rampage_counter/10))
-        end
+
+	-- Update rampage bonus
+    if self.rampage and self.rampage_counter >= 10 then
+		self.aspd_multiplier:increase(math.floor(self.rampage_counter / 10))
+		self.pspd_multiplier:increase(math.floor(self.rampage_counter / 10))
     end
 
-    -- Sappers
-    for id, sap_type in pairs(self.sappers) do
-        if sap_type == 'ASPD' then self.aspd_multiplier:decrease(50)
-        elseif sap_type == 'PSPD' then self.pspd_multiplier:decrease(50)
-        elseif sap_type == 'MVSPD' then self.mvspd_multiplier:decrease(50)
-        elseif sap_type == 'Cycle' then self.cycle_multiplier:decrease(50) end
+	-- Apply sapper effects
+    for _, sap_type in pairs(self.sappers) do
+        if sap_type == 'ASPD' then
+			self.aspd_multiplier:decrease(50)
+        elseif sap_type == 'PSPD' then
+			self.pspd_multiplier:decrease(50)
+        elseif sap_type == 'MVSPD' then
+			self.mvspd_multiplier:decrease(50)
+        elseif sap_type == 'Cycle' then
+			self.cycle_multiplier:decrease(50)
+		end
     end
 
-    -- Conversions
-    if self.ammo_to_aspd > 0 then self.aspd_multiplier:increase((self.ammo_to_aspd/100)*(self.max_ammo - 100)) end
-    if self.mvspd_to_aspd > 0 then self.aspd_multiplier:increase((self.mvspd_to_aspd/100)*(self.mvspd_multiplier.value*100 - 100)) end
-    if self.mvspd_to_pspd > 0 then self.pspd_multiplier:increase((self.mvspd_to_pspd/100)*(self.pspd_multiplier.value*100 - 100)) end
+    ---- Conversions
+	-- Ammo to attack speed conversion
+    if self.ammo_to_aspd > 0 then
+		self.aspd_multiplier:increase((self.ammo_to_aspd / 100) * (self.max_ammo - 100))
+	end
 
+	-- Movement speed to attack speed conversion
+    if self.mvspd_to_aspd > 0 then
+		self.aspd_multiplier:increase((self.mvspd_to_aspd / 100) * ((self.mvspd_multiplier.value * 100) - 100))
+	end
+
+	-- Movement speed to projectile speed conversion
+    if self.mvspd_to_pspd > 0 then
+		self.pspd_multiplier:increase((self.mvspd_to_pspd / 100) * ((self.pspd_multiplier.value * 100) - 100))
+	end
+
+	-- Update stats
     self.aspd_multiplier:update(dt)
     self.mvspd_multiplier:update(dt)
     self.pspd_multiplier:update(dt)
     self.cycle_multiplier:update(dt)
 
-    -- Collision
-    if self.x < 0 then self.r = math.pi - self.r; self:hit(10) end
-    if self.y < 0 then self.r = 2*math.pi - self.r; self:hit(10) end
-    if self.x > gw then self.r = math.pi - self.r; self:hit(10) end
-    if self.y > gh then self.r = 2*math.pi - self.r; self:hit(10) end
+    ---- Collision
+	-- Left border
+    if self.x < 0 then
+		self.r = math.pi - self.r
+		self:hit(10)
+	end
 
-    for _, shape in ipairs(self:enter('Collectable')) do
-        local object = shape.object
-        if object then
-            if object:is(Ammo) then
-                object:die()
-                self:addAmmo(5)
-                self:onAmmoPickup()
+	-- Top border
+    if self.y < 0 then
+		self.r = 2 * math.pi - self.r
+		self:hit(10)
+	end
 
-            elseif object:is(Boost) then
-                playGameItem()
-                object:die()
-                self:addBoost(math.floor(self.max_boost/4))
+	-- Right border
+    if self.x > gw then
+		self.r = math.pi - self.r
+		self:hit(10)
+	end
 
-            elseif object:is(SkillPoint) then
-                playGameItem()
-                object:die()
-                self:addSP(1)
-                self:onSPPickup()
+	-- Bottom border
+    if self.y > gh then
+		self.r = 2 * math.pi - self.r
+		self:hit(10)
+	end
 
-            elseif object:is(Attack) then
-                playGameItem()
-                object:die()
-                self:setAttack(object.attack)
-                current_room.score = current_room.score + 200
-
-            elseif object:is(HP) then
-                playGameItem()
-                object:die()
-                self:addHP(math.floor(self.max_hp/4))
-                self:onHPPickup()
-
-            elseif object:is(Key) then
-                playGameItem()
-                object:die()
-                current_room.key_found = 'KEY ' .. keys[object.n].address.. ' FOUND'
-                timer:after(3, function() current_room.key_found = false end)
-                found_keys[object.n] = 1
-                current_room:glitchError()
-
-            elseif object:is(Item) then
-                playGameItem()
-                object:die()
-                self:onItemPickup()
-
-                local buff_type = self.item_type_chance_list:next()
-                local buff = table.randomh(self.permanent_buffs[buff_type])
-                if buff_type == 'attack_change' then
-                    self:setAttack(table.random(attack_names))
-                    self.area:addGameObject('InfoText', self.x, self.y, {text = 'Attack Change!'})
-
-                elseif type(self.permanent_buffs[buff_type][buff][1]) == 'table' then
-                    local n = self.permanent_buffs[buff_type][buff][1]:next()
-                    if buff == 'aspd_multiplier' or buff == 'mvspd_multiplier' or buff == 'pspd_multiplier' or buff == 'cycle_multiplier' then self[buff] = Stat(self[buff].value + n)
-                    elseif buff == 'hp_multiplier' then self.max_hp = self.max_hp*(1+n)
-                    elseif buff == 'ammo_multiplier' then self.max_ammo = self.max_ammo*(1+n)
-                    elseif buff == 'boost_multiplier' then self.max_boost = self.max_boost*(1+n)
-                    elseif buff == 'flat_hp' then self.max_hp = self.max_hp + n
-                    elseif buff == 'flat_ammo' then self.max_ammo = self.max_ammo + n
-                    elseif buff == 'flat_boost' then self.max_boost = self.max_boost + n
-                    else self[buff] = self[buff] + n end
-                    if self.projectile_waviness_multiplier > 1 then self.wavy_projectiles = true end
-                    if self.pspd_multiplier.value < 0 then self.pspd_multiplier.base = 0 end
-                    self:setClass(buff)
-                    self:generateChances()
-                    local text = ''
-                    if n < 1 then text = text .. '+' .. n*100 .. '% ' .. self.permanent_buffs[buff_type][buff][2] .. '!'
-                    else 
-                        if self.permanent_buffs[buff_type][buff][2]:find('Chance') then text = text .. '+' .. n .. '% ' .. self.permanent_buffs[buff_type][buff][2] .. '!'
-                        else text = text .. '+' .. n .. ' ' .. self.permanent_buffs[buff_type][buff][2] .. '!' end
-                    end
-                    self.area:addGameObject('InfoText', object.x, object.y, {text = text})
-
-                elseif type(self.permanent_buffs[buff_type][buff][1]) == 'boolean' then
-                    self[buff] = true
-                    local text = self.permanent_buffs[buff_type][buff][2] .. '!'
-                    self:setClass(buff)
-                    self:generateChances()
-                    self.area:addGameObject('InfoText', object.x, object.y, {text = text})
+	-- Collision effects
+	for shape, _ in pairs(HC.collisions(self.shape)) do
+        if shape.object then
+            if shape.tag == "Collectable" then
+                -- Ammo pickup
+                if shape.object:is(Ammo) then
+                    shape.object:die()
+                    self:addAmmo(5)
+                    self:onAmmoPickup()
+                -- Boost pickup
+                elseif shape.object:is(Boost) then
+                    playGameItem()
+                    shape.object:die()
+                    self:addBoost(math.floor(self.max_boost / 4))
+                -- SP pickup
+                elseif shape.object:is(SkillPoint) then
+                    playGameItem()
+                    shape.object:die()
+                    self:addSP(1)
+                    self:onSPPickup()
+                -- Attack pickup
+                elseif shape.object:is(Attack) then
+                    playGameItem()
+                    shape.object:die()
+                    self:setAttack(shape.object.attack)
+                    current_room.score = current_room.score + 200
+                -- HP pickup
+                elseif shape.object:is(HP) then
+                    playGameItem()
+                    shape.object:die()
+                    self:addHP(math.floor(self.max_hp / 4))
+                    self:onHPPickup()
+				-- Key pickup
+				elseif shape.object:is(Key) then
+					playGameItem()
+					shape.object:die()
+					current_room.key_found = 'KEY ' .. keys[object.n].address.. ' FOUND'
+					timer:after(3, function() current_room.key_found = false end)
+					found_keys[shape.object.n] = 1
+					current_room:glitchError()
+				-- Item pickup
+				elseif shape.object:is(Item) then
+					playGameItem()
+					shape.object:die()
+					self:onItemPickup()
+					local itemType = self.item_type_chance_list:next()
+					local itemRoll = table.randomh(self.permanent_buffs[itemType])
+					if itemType == 'attack_change' then
+						self:setAttack(table.random(attack_names))
+						self.area:addGameObject('InfoText', self.x, self.y, {
+							text = 'Random Attack!'
+						})
+					elseif type(self.permanent_buffs[itemType][itemRoll][1]) == 'table' then
+						local itemValue = self.permanent_buffs[itemType][itemRoll][1]:next()
+						if itemRoll == 'aspd_multiplier' or
+							itemRoll == 'mvspd_multiplier' or
+							itemRoll == 'pspd_multiplier' or
+							itemRoll == 'cycle_multiplier' then
+							self[itemRoll] = Stat(self[itemRoll].value + itemValue)
+						elseif itemRoll == 'hp_multiplier' then
+							self.max_hp = self.max_hp * (1 + itemValue)
+						elseif itemRoll == 'ammo_multiplier' then
+							self.max_ammo = self.max_ammo * (1 + itemValue)
+						elseif itemRoll == 'boost_multiplier' then
+							self.max_boost = self.max_boost * (1 + itemValue)
+						elseif itemRoll == 'flat_hp' then
+							self.max_hp = self.max_hp + itemValue
+						elseif itemRoll == 'flat_ammo' then
+							self.max_ammo = self.max_ammo + itemValue
+						elseif itemRoll == 'flat_boost' then
+							self.max_boost = self.max_boost + itemValue
+						else
+								self[itemRoll] = self[itemRoll] + itemValue
+						end
+						if self.projectile_waviness_multiplier > 1 then
+							self.wavy_projectiles = true
+						end
+						if self.pspd_multiplier.value < 0 then
+							self.pspd_multiplier.base = 0
+						end
+						self:setClass(itemRoll)
+						self:generateChances()
+						local text = ''
+						if itemValue < 1 then
+							text = '+' .. (itemValue * 100) .. '% ' .. self.permanent_buffs[itemType][itemRoll][2] .. '!'
+						else
+							if self.permanent_buffs[itemType][itemRoll][2]:find('Chance') then
+								text = '+' .. itemValue .. '% ' .. self.permanent_buffs[itemType][itemRoll][2] .. '!'
+							else
+								text = text .. '+' .. itemValue .. ' ' .. self.permanent_buffs[itemType][itemRoll][2] .. '!'
+							end
+						end
+						self.area:addGameObject('InfoText', shape.object.x, shape.object.y, {
+							text = text
+						})
+					elseif type(self.permanent_buffs[itemType][itemRoll][1]) == 'boolean' then
+						self[itemRoll] = true
+						self:setClass(itemRoll)
+						self:generateChances()
+						self.area:addGameObject('InfoText', shape.object.x, shape.object.y, {
+							text = self.permanent_buffs[itemType][itemRoll][2] .. '!'
+						})
+					end
+                end
+            elseif shape.tag == "Enemy" then
+                if shape.object:is(Sapper) then
+                    self:hit(10)
+                else
+                    self:hit(30)
+                end
+                if self.deals_damage_while_invulnerable then
+                    shape.object:hit(1000)
                 end
             end
         end
     end
 
-    for _, shape in ipairs(self:enter('Enemy')) do
-        local object = shape.object
-        if object then 
-            if object:is(Sapper) then self:hit(10) 
-            else self:hit(30) end
-            if self.deals_damage_while_invulnerable then object:hit(1000) end
-        end
-    end
-
-    -- Rampage
+	-- Rampage timer update
     self.rampage_timer = self.rampage_timer + dt
     if self.rampage_timer > self.rampage_cooldown then
         self.rampage_counter = 0
         self.rampage_timer = 0
     end
 
-    -- Cycle
-    self.cycle_timer = self.cycle_timer + dt*self.cycle_multiplier.value
+    -- Cycle timer update
+    self.cycle_timer = self.cycle_timer + self.cycle_multiplier.value * dt
     if self.cycle_timer > self.cycle_cooldown then
         self.cycle_timer = 0
         self:cycle()
     end
-
     if self.threader then
-        self.cycle_timer_2 = self.cycle_timer_2 + dt*self.cycle_multiplier.value*0.47
+        self.cycle_timer_2 = self.cycle_timer_2 + self.cycle_multiplier.value * dt * 0.47
         if self.cycle_timer_2 > self.cycle_cooldown_2 then
             self.cycle_timer_2 = 0
             self:cycle()
         end
-
-        self.cycle_timer_3 = self.cycle_timer_3 + dt*self.cycle_multiplier.value*0.22
+        self.cycle_timer_3 = self.cycle_timer_3 + self.cycle_multiplier.value * dt * 0.22
         if self.cycle_timer_3 > self.cycle_cooldown_3 then
             self.cycle_timer_3 = 0
             self:cycle()
         end
-
-        self.cycle_timer_4 = self.cycle_timer_4 + dt*self.cycle_multiplier.value*0.06
+        self.cycle_timer_4 = self.cycle_timer_4 + self.cycle_multiplier.value * dt * 0.06
         if self.cycle_timer_4 > self.cycle_cooldown_4 then
             self.cycle_timer_4 = 0
             self:cycle()
         end
     end
 
-    -- Boost
-    self.boost = math.min(self.boost + 10*dt*self.boost_recharge_rate_multiplier, self.max_boost)
+	-- Boost calculations
+    self.boost = math.min(self.boost + 10 * dt * self.boost_recharge_rate_multiplier, self.max_boost)
     self.boost_timer = self.boost_timer + dt
-    if self.boost_timer > self.boost_cooldown then self.can_boost = true end
+    if self.boost_timer > self.boost_cooldown then
+		self.can_boost = true
+	end
     self.max_v = self.base_max_v
     self.boosting = false
     if self.turner then
         self.boosting_up = false
         self.boosting_down = false
     end
-    if input:pressed('up') and self.boost > 1 and self.can_boost then self:onBoostStart() end
-    if input:released('up') then self:onBoostEnd() end
-    if input:down('up') and self.boost > 1 and self.can_boost then 
-        self.boosting = true
-        if self.turner then self.boosting_up = true end
-        self.max_v = 1.5*self.base_max_v*self.boost_effectiveness_multiplier
-        self.boost = self.boost - 50*dt
-        if self.boost <= 1 then
-            self.boosting = false
-            if self.turner then self.boosting_up = false end
-            self.can_boost = false
-            self.boost_timer = 0
-            self:onBoostEnd()
-        end
-    end
-    if input:pressed('down') and self.boost > 1 and self.can_boost then self:onBoostStart() end
-    if input:released('down') then self:onBoostEnd() end
-    if input:down('down') and self.boost > 1 and self.can_boost then 
-        self.boosting = true
-        if self.turner then self.boosting_down = true end
-        self.max_v = 0.5*self.base_max_v*(2-self.boost_effectiveness_multiplier)
-        self.boost = self.boost - 50*dt
-        if self.boost <= 1 then
-            self.boosting = false
-            if self.turner then self.boosting_down = false end
-            self.can_boost = false
-            self.boost_timer = 0
-            self:onBoostEnd()
-        end
-    end
-    self.trail_color = skill_point_color 
-    if self.boosting then self.trail_color = boost_color end
+    if input:pressed('up') then
+		if self.boost > 1 and self.can_boost then
+			self:onBoostStart()
+		end
+	end
+    if input:released('up') then
+		self:onBoostEnd()
+	end
+	if input:down("up") then
+		if self.boost > 1 and self.can_boost then
+			self.boosting = true
+			if self.turner then
+				self.boosting_up = true
+			end
+			self.max_v = 1.5 * self.base_max_v * self.boost_effectiveness_multiplier
+			self.boost = self.boost - 50 * dt
+			if self.boost <= 1 then
+				self.boosting = false
+				if self.turner then
+					self.boosting_up = false
+				end
+				self.can_boost = false
+				self.boost_timer = 0
+				self:onBoostEnd()
+			end
+		end
+	end
+	if input:pressed("down") then
+		if self.boost > 1 and self.can_boost then
+			self:onBoostStart()
+		end
+	end
+    if input:released('down') then
+		self:onBoostEnd()
+	end
+	if input:down("down") then
+		if self.boost > 1 and self.can_boost then
+			self.boosting = true
+			if self.turner then
+				self.boosting_down = true
+			end
+			self.max_v = 0.5 * self.base_max_v * (2 - self.boost_effectiveness_multiplier)
+			self.boost = self.boost - 50 * dt
+			if self.boost <= 1 then
+				self.boosting = false
+				if self.turner then
+					self.boosting_down = false
+				end
+				self.can_boost = false
+				self.boost_timer = 0
+				self:onBoostEnd()
+			end
+		end
+	end
+    self.trail_color = skill_point_color
+    if self.boosting then
+		self.trail_color = boost_color
+	end
 
-    -- Shoot
+    -- Shooting
     self.shoot_timer = self.shoot_timer + dt
-    if self.shoot_timer > self.shoot_cooldown/self.aspd_multiplier.value then
+    if self.shoot_timer > self.shoot_cooldown / self.aspd_multiplier.value then
         self.shoot_timer = 0
         self:shoot()
     end
@@ -658,38 +771,71 @@ function Player:update(dt)
     -- Barrage
     self.barrage_timer = self.barrage_timer + dt
 
-    -- Protective Barrier
-    if self.protective_barrier > 10 then self.protective_barrier = 10 end
+    -- Protective Barrier hard cap
+    if self.protective_barrier > 10 then
+		self.protective_barrier = 10
+	end
 
-    -- Dash
-    if self.dasher and input:sequence('up', 0.5, 'up') then
-        if self.boost >= 50 then
-            local angle = Vector.angle(self.vx, self.vy)
-            local tx, ty = self.x + 64*math.cos(angle), self.y + 64*math.sin(angle)
-            self.shape:moveTo(tx, ty)
-            self:removeBoost(50)
-            self.invincible = true
-            self.timer:after('invincibility', 2*self.invulnerability_time_multiplier, function() self.invincible = false end)
-            for i = 1, math.floor(50*self.invulnerability_time_multiplier) do self.timer:after((i-1)*0.04, function() self.invisible = not self.invisible end) end
-            self.timer:after((math.floor(50*self.invulnerability_time_multiplier)+1)*0.04, function() self.invisible = false end)
-            for i = 1, 10 do
-                self.timer:after(0.1*i, function() self.area:addGameObject('Explosion', self.x + random(-32, 32), self.y + random(-32, 32), {color = boost_color, damage_multiplier = 2}) end)
-            end
-        end
-    end
+	-- Dasher ability
+	if self.dasher and self.boost >= 50 and input:sequence("up", 0.5, "up") then
+		local new_x = self.x + 64 * math.cos(Vector.angle(self.vx, self.vy))
+		local new_y = self.y + 64 * math.sin(Vector.angle(self.vx, self.vy))
+		self.shape:moveTo(new_x, new_y)
+		self:removeBoost(50)
+		self.invincible = true
+		local function cancelInvuln() self.invincible = false end
+		self.timer:after("invincibility", 2 * self.invulnerability_time_multiplier, cancelInvuln)
+		for i = 1, math.floor(50 * self.invulnerability_time_multiplier) do
+			local function invisFlash() self.invisible = not self.invisible end
+			self.timer:after((i - 1) * 0.04, invisFlash)
+		end
+		function cancelInvis() self.invisible = false end
+		self.timer:after((math.floor(50 * self.invulnerability_time_multiplier) + 1) * 0.04, cancelInvis)
+		local function dropBomb()
+			local e_x = self.x + random(-32, 32)
+			local e_y = self.y + random(-32, 32)
+			self.area:addGameObject("Explosion", e_x, e_y, {
+				color = boost_color,
+				damage_multiplier = 2
+			})
+		end
+		for i = 1, 10 do
+			self.timer:after(i * 0.1, dropBomb)
+		end
+	end
+
+	-- Turning
+    if input:down('left') then
+		local boost_up = self.boosting_up and 1.5 or 1
+		local boost_down = self.boosting_down and 0.5 or 1
+		self.r = self.r - boost_up * boost_down * self.turn_rate_multiplier * self.rv * dt
+	end
+    if input:down('right') then
+		local boost_up = self.boosting_up and 1.5 or 1
+		local boost_down = self.boosting_down and 0.5 or 1
+		self.r = self.r + boost_up * boost_down * self.turn_rate_multiplier * self.rv * dt
+	end
+
+	-- Velocity update
+	self.v = math.min(self.v + self.a * dt, self.max_v * self.mvspd_multiplier.value)
+	self.vy = self.v * math.sin(self.r)
+	self.vx = self.v * math.cos(self.r)
+    -- Paused
+	if self.paused then
+		self.vy = 0
+		self.vx = 0
+	end
+
+	-- Unpause
+	if input:pressed("left") or
+	   input:pressed("right") or
+	   input:pressed("up") or
+	   input:pressed("down") then
+		self.paused = false
+	end
 
     -- Movement
-    if input:down('left') then self.r = self.r - (self.boosting_up and 1.5 or 1)*(self.boosting_down and 0.5 or 1)*self.turn_rate_multiplier*self.rv*dt end
-    if input:down('right') then self.r = self.r + (self.boosting_up and 1.5 or 1)*(self.boosting_down and 0.5 or 1)*self.turn_rate_multiplier*self.rv*dt end
-    self.v = math.min(self.v + self.a*dt, self.max_v*self.mvspd_multiplier.value)
-    self.vx, self.vy = self.v*math.cos(self.r), self.v*math.sin(self.r)
-
-    -- Paused
-    if self.paused then self.vx, self.vy = 0, 0 end
-    if input:pressed('left') or input:pressed('right') or input:pressed('up') or input:pressed('down') then self.paused = false end
-
-    -- Move
-    self.shape:move(self.vx*dt, self.vy*dt)
+    self.shape:move(self.vx * dt, self.vy * dt)
     self.x, self.y = self.shape:center()
 end
 
@@ -975,28 +1121,38 @@ function Player:setRandomAttack()
 end
 
 function Player:grantRandomBuff()
-    local buff = table.random({'ASPD', 'MVSPD', 'Cycle', 'PSPD'})
-
-    if buff == 'ASPD' then
-        self.aspd_boosting = true
-        self.timer:after(4*self.stat_boost_duration_multiplier, function() self.aspd_boosting = false end)
-        self.area:addGameObject('InfoText', self.x, self.y, {text = 'ASPD Boost!', color = ammo_color})
-
-    elseif buff == 'MVPSD' then
-        self.mvspd_boosting = true
-        self.timer:after(4*self.stat_boost_duration_multiplier, function() self.mvspd_boosting = false end)
-        self.area:addGameObject('InfoText', self.x, self.y, {text = 'MVSPD Boost!'})
-
-    elseif buff == 'Cycle' then
-        self.cycle_boosting = true
-        self.timer:after(4*self.stat_boost_duration_multiplier, function() self.cycle_boosting = false end)
-        self.area:addGameObject('InfoText', self.x, self.y, {text = 'Cycle Boost!'})
-
-    elseif buff == 'PSPD' then
-        self.pspd_boosting = true
-        self.timer:after(4*self.stat_boost_duration_multiplier, function() self.pspd_boosting = false end)
-        self.area:addGameObject('InfoText', self.x, self.y, {text = 'PSPD Boost!'})
-    end
+	local buffs = {
+		{
+			stat = "aspd_boosting",
+			info = {
+				color = ammo_color,
+				text = "ASPD Boost!"
+			}
+		},
+		{
+			stat = "mvspd_boosting",
+			info = {
+				text = "MVSPD Boost!"
+			}
+		},
+		{
+			stat = "pspd_boosting",
+			info = {
+				text = "PSPD Boost!"
+			}
+		},
+		{
+			stat = "cycle_boosting",
+			info = {
+				text = "Cycle Boost!"
+			}
+		}
+	}
+	local pickedBuff = table.random(buffs)
+	self[pickedBuff.stat] = true
+	local function killBuff() self[pickedBuff.stat] = false end
+	self.timer:after(pickedBuff.stat, 4 * self.stat_boost_duration_multiplier, killBuff)
+	self.area:addGameObject("InfoText", self.x, self.y, pickedBuff.info)
 end
 
 function Player:hit(damage, hit_type)
@@ -1197,227 +1353,317 @@ function Player:onAmmoPickup()
 end
 
 function Player:onCycle()
-    if self.cant_trigger_on_cycle_events then return end
+	if self.cant_trigger_on_cycle_events then return end
 
-    if self.chances.spawn_sp_on_cycle_chance:next() then
-        self.area:addGameObject('SkillPoint')
-        self.area:addGameObject('InfoText', self.x, self.y, {text = 'SP Spawn!', color = skill_point_color})
+	if self.chances.spawn_sp_on_cycle_chance:next() then
+		self.area:addGameObject("SkillPoint")
+		self.area:addGameObject("InfoText", self.x, self.y, {
+			color = skill_point_color,
+			text = "SP Spawn!"
+		})
     end
-
-    if self.chances.spawn_hp_on_cycle_chance:next() then
-        self.area:addGameObject('HP')
-        self.area:addGameObject('InfoText', self.x, self.y, {text = 'HP Spawn!', color = hp_color})
-    end
-
-    if self.chances.regain_hp_on_cycle_chance:next() then
-        self:addHP(math.floor(self.max_hp/4))
-        self.area:addGameObject('InfoText', self.x, self.y, {text = 'HP Regain!', color = hp_color})
-    end
-
-    if self.chances.regain_full_ammo_on_cycle_chance:next() then
-        self:addAmmo(self.max_ammo)
-        self.area:addGameObject('InfoText', self.x, self.y, {text = 'Full Ammo Regain!', color = ammo_color})
-    end
-
-    if self.chances.change_attack_on_cycle_chance:next() then
-        self:setRandomAttack()
-        self.area:addGameObject('InfoText', self.x, self.y, {text = 'Random Attack!'})
-    end
-
-    if self.chances.spawn_haste_area_on_cycle_chance:next() then
-        self.area:addGameObject('HasteArea', self.x, self.y)
-        self.area:addGameObject('InfoText', self.x, self.y, {text = 'Haste Area!'})
-    end
-
-    if self.chances.barrage_on_cycle_chance:next() and not self.cant_barrage then
-        self:barrage()
-    end
-
-    if self.chances.launch_homing_projectile_on_cycle_chance:next() and not self.cant_launch_homing_projectiles then
-        local d = 1.2*self.w
-        for i = 1, 1+self.additional_homing_projectile do
-            self.area:addGameObject('Projectile', self.x + d*math.cos(self.r), self.y + d*math.sin(self.r), {r = self.r, attack = 'Homing', damage_multiplier = 2})
-        end
-        self.area:addGameObject('InfoText', self.x, self.y, {text = 'Homing Projectile!'})
-    end
-
-    if self.chances.gain_mvspd_boost_on_cycle_chance:next() then
-        self.mvspd_boosting = true
-        self.timer:after(4*self.stat_boost_duration_multiplier, function() self.mvspd_boosting = false end)
-        self.area:addGameObject('InfoText', self.x, self.y, {text = 'MVSPD Boost!'})
-    end
-
-    if self.chances.gain_pspd_boost_on_cycle_chance:next() then
-        self.pspd_boosting = true
-        self.timer:after(4*self.stat_boost_duration_multiplier, function() self.pspd_boosting = false end)
-        self.area:addGameObject('InfoText', self.x, self.y, {text = 'PSPD Boost!'})
-    end
-
-    if self.chances.gain_pspd_inhibit_on_cycle_chance:next() then
-        self.pspd_inhibiting = true
-        self.timer:after(4*self.stat_boost_duration_multiplier, function() self.pspd_inhibiting = false end)
-        self.area:addGameObject('InfoText', self.x, self.y, {text = 'PSPD Inhibit!'})
-    end
-
-    if self.chances.self_explode_on_cycle_chance:next() then
-        self:explode()
-    end
+	if self.chances.spawn_hp_on_cycle_chance:next() then
+		self.area:addGameObject("HP")
+		self.area:addGameObject("InfoText", self.x, self.y, {
+			color = hp_color,
+			text = "HP Spawn!"
+		})
+	end
+	if self.chances.regain_hp_on_cycle_chance:next() then
+		self:addHP(math.floor(self.max_hp / 4))
+		self.area:addGameObject("InfoText", self.x, self.y, {
+			color = hp_color,
+			text = "HP Regain!"
+		})
+	end
+	if self.chances.regain_full_ammo_on_cycle_chance:next() then
+		self:addAmmo(self.max_ammo)
+		self.area:addGameObject("InfoText", self.x, self.y, {
+			color = ammo_color,
+			text = "Full Ammo Regain!"
+		})
+	end
+	if self.chances.change_attack_on_cycle_chance:next() then
+		self:setRandomAttack()
+		self.area:addGameObject("InfoText", self.x, self.y, {
+			text = "Random Attack!"
+		})
+	end
+	if self.chances.spawn_haste_area_on_cycle_chance:next() then
+		self.area:addGameObject("HasteArea", self.x, self.y)
+		self.area:addGameObject("InfoText", self.x, self.y, {
+			text = "Haste Area!"
+		})
+	end
+	if not self.cant_barrage then
+		if self.chances.barrage_on_cycle_chance:next() then
+			self:barrage()
+		end
+	end
+	if not self.cant_launch_homing_projectiles then
+		if self.chances.launch_homing_projectile_on_cycle_chance:next() then
+			for i = 1, 1 + self.additional_homing_projectile do
+				local p_x = self.x + 1.2 * self.w * math.cos(self.r)
+				local p_y = self.y + 1.2 * self.w * math.sin(self.r)
+				self.area:addGameObject("Projectile", p_x, p_y, {
+					r = self.r,
+					attack = "Homing",
+					damage_multiplier = 2
+				})
+			end
+			self.area:addGameObject("InfoText", self.x, self.y, {
+				text = "Homing Projectile!"
+			})
+		end
+	end
+	if self.chances.gain_mvspd_boost_on_cycle_chance:next() then
+		self.mvspd_boosting = true
+		local function killBuff() self.mvspd_boosting = false end
+		self.timer:after("mvspd_boosting", 4 * self.stat_boost_duration_multiplier, killBuff)
+		self.area:addGameObject("InfoText", self.x, self.y, {
+			text = "MVSPD Boost!"
+		})
+	end
+	if self.chances.gain_pspd_boost_on_cycle_chance:next() then
+		self.pspd_boosting = true
+		local function killBuff() self.pspd_boosting = false end
+		self.timer:after("pspd_boosting", 4 * self.stat_boost_duration_multiplier, killBuff)
+		self.area:addGameObject("InfoText", self.x, self.y, {
+			text = "PSPD Boost!"
+		})
+	end
+	if self.chances.gain_pspd_inhibit_on_cycle_chance:next() then
+		self.pspd_inhibiting = true
+		local function killBuff() self.pspd_inhibiting = false end
+		self.timer:after("pspd_inhibiting", 4 * self.stat_boost_duration_multiplier, killBuff)
+		self.area:addGameObject("InfoText", self.x, self.y, {
+			text = "PSPD Inhibit!"
+		})
+	end
+	if self.chances.self_explode_on_cycle_chance:next() then
+		self:explode()
+	end
 end
 
-function Player:onKill(enemy)
+function Player:onKill(killed_enemy)
+	-- TODO: Rework rampage threshold triggers to repeat regularly?
     if self.rampage then
         self.rampage_counter = self.rampage_counter + 1
         self.rampage_timer = 0
-
+        -- Barrage at 15
         if self.rampage_counter == 15 then
-            -- Barrage
             self:barrage()
-
+        -- 8 homing projectiles at 30
         elseif self.rampage_counter == 30 then
-            -- Launch 8 Homing Projectiles
-            local d = 1.2*self.w
+            local p_x = self.x + 1.2 * self.w * math.cos(self.r)
+            local p_y = self.y + 1.2 * self.w * math.sin(self.r)
             for i = 1, 8 do
-                self.area:addGameObject('Projectile', self.x + d*math.cos(self.r), self.y + d*math.sin(self.r), {r = self.r, attack = 'Homing', damage_multiplier = 2})
+                self.area:addGameObject("Projectile", p_x, p_y, {
+                    r = self.r,
+                    attack = "Homing",
+                    damage_multiplier = 2
+                })
             end
-            self.area:addGameObject('InfoText', self.x, self.y, {text = 'Homing Projectile!'})
-
+            self.area:addGameObject("InfoText", self.x, self.y, {
+                text = "Homing Projectile!"
+            })
+        -- Queue two barrages at 45
         elseif self.rampage_counter == 45 then
-            -- 2 Barrage Novas
-            for j = 1, 2 do
-                self.timer:after((j-1)*1, function()
-                    self:barrage(true)
-                end)
+            local function triggerBarrage() self:barrage(true) end
+            for i = 1, 2 do
+                self.timer:after(i - 1, triggerBarrage)
             end
-            self.area:addGameObject('InfoText', self.x, self.y, {text = 'Barrage Nova!!!'})
-
+            self.area:addGameObject("InfoText", self.x, self.y, {
+                text = "Barrage Nova!!!"
+            })
+        -- 5 barriers at 70
         elseif self.rampage_counter == 70 then
-            -- +5 Protective Barrier
             self.protective_barrier = self.protective_barrier + 5
-
+            self.area:addGameObject("InfoText", self.x, self.y, {
+                color = default_color,
+                text = "Protective Barrier!"
+            })
+        -- +1 SP at 100
         elseif self.rampage_counter == 100 then
-            -- +2 SP
             self:addSP(1)
-            self.area:addGameObject('InfoText', self.x, self.y, {text = '+1 SP', color = skill_point_color})
-
+            self.area:addGameObject("InfoText", self.x, self.y, {
+                color = skill_point_color,
+                text = "+1 SP"
+            })
+        -- Queue 5 barrages at 130
         elseif self.rampage_counter == 130 then
-            -- 5 Barrage Novas
-            for j = 1, 5 do
-                self.timer:after((j-1)*1, function()
-                    self:barrage(true)
-                end)
+            local function triggerBarrage() self:barrage(true) end
+            for i = 1, 5 do
+                self.timer:after(i - 1, triggerBarrage)
             end
-            self.area:addGameObject('InfoText', self.x, self.y, {text = 'Barrage Nova!!!'})
-
+            self.area:addGameObject("InfoText", self.x, self.y, {
+                text = "Barrage Nova!!!"
+            })
+        -- turn every 5th ammo drop into a mine at 170
         elseif self.rampage_counter == 170 then
-            local ammos = self.area:getAllGameObjectsThat(function(e) return e:is(Ammo) end)
-            local n = math.floor(#ammos/5)
-            for i = 1, n do
-                local ammo = table.remove(ammos, love.math.random(1, #ammos))
+            local function isAmmo(gameObject) return gameObject:is(Ammo) end
+            local allAmmo = self.area:getAllGameObjectsThat(isAmmo)
+            for i = 1, math.floor(#allAmmo / 5) do
+                local ammo = table.remove(allAmmo, love.math.random(1, #allAmmo))
                 if ammo then
                     ammo:die()
-                    local d = 1.2*self.w
-                    self.area:addGameObject('Projectile', ammo.x - d*math.cos(self.r), ammo.y - d*math.sin(self.r),
-                    {r = self.r, rv = table.random({random(-12*math.pi, -10*math.pi), random(10*math.pi, 12*math.pi)}), mine = true, attack = self.attack})
+                    local p_x = ammo.x - 1.2 * self.w * math.cos(self.r)
+                    local p_y = ammo.y - 1.2 * self.w * math.sin(self.r)
+                    self.area:addGameObject("Projectile", p_x, p_y, {
+                        r = self.r,
+                        rv = table.random({random(-12 * math.pi, -10 * math.pi),
+                                            random(10 * math.pi, 12 * math.pi)}),
+                        attack = self.attack,
+                        mine = true
+                    })
                 end
             end
-
+        -- +2 SP at 200
         elseif self.rampage_counter == 200 then
-            -- +2 SP
             self:addSP(2)
-            self.area:addGameObject('InfoText', self.x, self.y, {text = '+2 SP', color = skill_point_color})
-
+            self.area:addGameObject("InfoText", self.x, self.y, {
+                color = skill_point_color,
+                text = "+2 SP"
+            })
+        -- 24 homing projectiles at 240
         elseif self.rampage_counter == 240 then
-            -- Launch 24 homing projectiles
-            local d = 1.2*self.w
+            local p_x = self.x + 1.2 * self.w * math.cos(self.r)
+            local p_y = self.y + 1.2 * self.w * math.sin(self.r)
             for i = 1, 24 do
-                self.area:addGameObject('Projectile', self.x + d*math.cos(self.r), self.y + d*math.sin(self.r), {r = self.r, attack = 'Homing', damage_multiplier = 2})
+                self.area:addGameObject("Projectile", p_x, p_y, {
+                    r = self.r,
+                    attack = "Homing",
+                    damage_multiplier = 2
+                })
             end
-            self.area:addGameObject('InfoText', self.x, self.y, {text = 'Homing Projectile!'})
-
+            self.area:addGameObject("InfoText", self.x, self.y, {
+                text = "Homing Projectile!"
+            })
+        -- Zap all enemies with lightning at 280
         elseif self.rampage_counter == 280 then
-            -- Cast lightning attack on all enemies
-            local d = 1.2*self.w
-            local x1, y1 = self.x + d*math.cos(self.r), self.y + d*math.sin(self.r)
-            local cx, cy = x1 + 24*math.cos(self.r), y1 + 24*math.sin(self.r)
-            local enemies = self.area:getAllGameObjectsThat(function(e)
-                for _, enemy in ipairs(enemies) do
-                    if e:is(_G[enemy]) then
+            local lightning_x = self.x + (1.2 * self.w + 24) * math.cos(self.r)
+            local lightning_y = self.y + (1.2 * self.w + 24) * math.sin(self.r)
+            local function isEnemy(enemy)
+                for _, name in ipairs(enemies) do
+                    if enemy:is(_G[name]) then
                         return true
                     end
                 end
-            end)
-            for i, enemy in ipairs(enemies) do
-                self.timer:after((i-1)*0.05, function()
-                    if enemy then
-                        enemy:hit()
-                        local x2, y2 = enemy.x, enemy.y
-                        self.area:addGameObject('LightningLine', 0, 0, {x1 = x1, y1 = y1, x2 = x2, y2 = y2})
-                        for i = 1, love.math.random(4, 8) do self.area.room.explode_particles:add(x1, y1, nil, nil, table.random({default_color, boost_color})) end
-                        for i = 1, love.math.random(4, 8) do self.area.room.explode_particles:add(x2, y2, nil, nil, table.random({default_color, boost_color})) end
+            end
+            local allEnemies = self.area:getAllGameObjectsThat(isEnemy)
+            local function zapEnemy()
+                if enemy then
+                    enemy:hit()
+                    self.area:addGameObject("LightningLine", 0, 0, {
+                        x1 = lightning_x,
+                        y1 = lightning_y,
+                        x2 = enemy.x,
+                        y2 = enemy.y
+                    })
+                    for i = 1, love.math.random(4, 8) do
+                        self.area.room.explode_particles:add(lightning_x, lightning_y, nil, nil, table.random({
+                            default_color,
+                            boost_color
+                        }))
                     end
-                end)
+                    for i = 1, love.math.random(4, 8) do
+                        self.area.room.explode_particles:add(enemy.x, enemy.y, nil, nil, table.random({
+                            default_color,
+                            boost_color
+                        }))
+                    end
+                end
             end
-
+            for i, enemy in ipairs(allEnemies) do
+                self.timer:after((i - 1) * 0.05, zapEnemy)
+            end
+        -- +2 SP at 330
         elseif self.rampage_counter == 330 then
-            -- +2 SP
             self:addSP(2)
-            self.area:addGameObject('InfoText', self.x, self.y, {text = '+2 SP', color = skill_point_color})
-
+            self.area:addGameObject("InfoText", self.x, self.y, {
+                color = skill_point_color,
+                text = "+2 SP"
+            })
+        -- Queue 20 barrages at 380
         elseif self.rampage_counter == 380 then
-            -- 20 Barrage Novas
-            for j = 1, 20 do
-                self.timer:after((j-1)*1, function()
-                    self:barrage(true)
-                end)
+            local function triggerBarrage() self:barrage(true) end
+            for i = 1, 20 do
+                self.timer:after(i - 1, triggerBarrage)
             end
-            self.area:addGameObject('InfoText', self.x, self.y, {text = 'Barrage Nova!!!'})
-
+            self.area:addGameObject("InfoText", self.x, self.y, {
+                text = "Barrage Nova!!!"
+            })
+        -- +10 barriers at 440
         elseif self.rampage_counter == 440 then
-            -- +10 Protective Barrier
             self.protective_barrier = self.protective_barrier + 10
-
+            self.area:addGameObject("InfoText", self.x, self.y, {
+                color = default_color,
+                text = "Protective Barrier!"
+            })
+        -- +4 SP at 500
         elseif self.rampage_counter == 500 then
-            -- +4 SP
             self:addSP(4)
-            self.area:addGameObject('InfoText', self.x, self.y, {text = '+4 SP', color = skill_point_color})
+            self.area:addGameObject("InfoText", self.x, self.y, {
+                color = skill_point_color,
+                text = "+4 SP"
+            })
         end
     end
 
     if self.chances.barrage_on_kill_chance:next() and not self.cant_barrage then
         self:barrage()
     end
-
     if self.chances.gain_aspd_boost_on_kill_chance:next() then
         self.aspd_boosting = true
-        self.timer:after(4*self.stat_boost_duration_multiplier, function() self.aspd_boosting = false end)
-        self.area:addGameObject('InfoText', self.x, self.y, {text = 'ASPD Boost!', color = ammo_color})
+        local function killBuff() self.aspd_boosting = false end
+        self.timer:after("aspd_boosting", 4 * self.stat_boost_duration_multiplier, killBuff)
+        self.area:addGameObject("InfoText", self.x, self.y, {
+            color = ammo_color,
+            text = "ASPD Boost!"
+        })
     end
-
     if self.chances.regain_ammo_on_kill_chance:next() then
         self:addAmmo(20)
+        self.area:addGameObject("InfoText", self.x, self.y, {
+            color = ammo_color,
+            text = "Ammo Regain!"
+        })
     end
-
     if self.chances.launch_homing_projectile_on_kill_chance:next() and not self.cant_launch_homing_projectiles then
-        local d = 1.2*self.w
-        for i = 1, 1+self.additional_homing_projectile do
-            self.area:addGameObject('Projectile', self.x + d*math.cos(self.r), self.y + d*math.sin(self.r), {r = self.r, attack = 'Homing', damage_multiplier = 2})
-        end
-        self.area:addGameObject('InfoText', self.x, self.y, {text = 'Homing Projectile!'})
+		for i = 1, 1 + self.additional_homing_projectile do
+			local p_x = self.x + 1.2 * self.w * math.cos(self.r)
+			local p_y = self.y + 1.2 * self.w * math.sin(self.r)
+			self.area:addGameObject("Projectile", p_x, p_y, {
+				r = self.r,
+				attack = "Homing",
+				damage_multiplier = 2
+			})
+		end
+		self.area:addGameObject("InfoText", self.x, self.y, {
+			text = "Homing Projectile!"
+		})
     end
-
     if self.chances.regain_boost_on_kill_chance:next() then
-        self:addBoost(math.floor(self.max_boost/4))
-        self.area:addGameObject('InfoText', self.x, self.y, {text = 'Boost Regain!', color = boost_color})
+        self:addBoost(math.floor(self.max_boost / 4))
+        self.area:addGameObject('InfoText', self.x, self.y, {
+			text = 'Boost Regain!',
+			color = boost_color
+		})
     end
-
     if self.chances.spawn_boost_on_kill_chance:next() then
         self.area:addGameObject('Boost')
-        self.area:addGameObject('InfoText', self.x, self.y, {text = 'Boost Spawn!', color = boost_color})
+        self.area:addGameObject('InfoText', self.x, self.y, {
+			text = 'Boost Spawn!',
+			color = boost_color
+		})
     end
 
     if self.chances.drop_double_ammo_chance:next() then
         self.area:addGameObject('Ammo', enemy.x, enemy.y)
-        self.area:addGameObject('InfoText', self.x, self.y, {text = 'Double Ammo!', color = ammo_color})
+        self.area:addGameObject('InfoText', self.x, self.y, {
+			text = 'Double Ammo!',
+			color = ammo_color
+		})
     end
 end
 
@@ -1483,69 +1729,106 @@ function Player:removeSapper(id)
     self.sappers[id] = nil
 end
 
-function Player:barrage(barrage_nova)
-    if self.barrage_timer < self.barrage_cooldown then return end
+function Player:barrage(novaAnyway)
+	if self.barrage_timer < self.barrage_cooldown then
+		return
+	end
     self.barrage_timer = 0
+	local function fireBarrage()
+		local angle = self.r
+		if self.barrage_nova or novaAnyway then
+			angle = random(0, 2 * math.pi)
+		else
+			angle = angle + random(-math.pi / 8, math.pi / 8)
+        end
+        local dist = 2.2 * self.w
+		local p_x = self.x + dist * math.cos(angle)
+        local p_y = self.y + dist * math.sin(angle)
+		local proj = self.area:addGameObject("Projectile", p_x, p_y, {
+			r = angle,
+			attack = self.attack,
+            damage_multiplier = 0.5,
 
-    for i = 1, 8+self.additional_barrage_projectile do
-        self.timer:after((i-1)*0.05, function()
-            local random_angle = random(-math.pi/8, math.pi/8)
-            if self.barrage_nova or barrage_nova then random_angle = random(0, 2*math.pi) end
-            local d = 2.2*self.w
-            self.area:addGameObject('Projectile', self.x + d*math.cos(self.r + random_angle), self.y + d*math.sin(self.r + random_angle), 
-            {r = self.r + random_angle, attack = self.attack, damage_multiplier = 0.5})
-        end)
-    end
-    self.area:addGameObject('InfoText', self.x, self.y, {text = 'Barrage!!!'})
+            -- Attack-specific parameters
+            bounce = (self.attack == "Bounce" and 4 + self.additional_bounce) or nil,
+            v = (self.attack == "Blast" and random(500, 600)) or nil,
+            s = (self.attack == "Flame" and 2) or ((self.attack == "4Split" or self.attack == "Explode") and 3) or nil
+        })
+        if proj then
+            self.area:addGameObject("ShootEffect", p_x, p_y, {
+                parent = proj,
+                d = 0
+            })
+        end
+	end
+	for i = 1, 8 + self.additional_barrage_projectile do
+		self.timer:after((i - 1) * 0.05, fireBarrage)
+	end
+    self.area:addGameObject('InfoText', self.x, self.y, {
+		text = 'Barrage!!!'
+	})
 end
 
 function Player:setStats()
     -- Conversions
     if self.mvspd_to_hp > 0 then
         if self.mvspd_multiplier.value < 1 then
-            self.flat_hp = self.flat_hp + self.mvspd_multiplier.value*self.mvspd_to_hp
+            self.flat_hp = self.flat_hp + self.mvspd_multiplier.value * self.mvspd_to_hp
         end
     end
 
     -- Basic stats
-    self.max_hp = (self.max_hp + self.flat_hp)*self.hp_multiplier
+    self.max_hp = (self.max_hp + self.flat_hp) * self.hp_multiplier
     self.hp = self.max_hp
-    self.max_ammo = (self.max_ammo + self.flat_ammo)*self.ammo_multiplier
+    self.max_ammo = (self.max_ammo + self.flat_ammo) * self.ammo_multiplier
     self.ammo = self.max_ammo
-    self.max_boost = (self.max_boost + self.flat_boost)*self.boost_multiplier
+    self.max_boost = (self.max_boost + self.flat_boost) * self.boost_multiplier
     self.boost = self.max_boost
 
-    -- Start with attack
-    local starting_attacks = {
-        self.start_with_double and 'Double', self.start_with_triple and 'Triple', self.start_with_rapid and 'Rapid', self.start_with_spread and 'Spread', self.start_with_back and 'Back',
-        self.start_with_side and 'Side', self.start_with_homing and 'Homing', self.start_with_blast and 'Blast', self.start_with_spin and 'Spin', self.start_with_lightning and 'Lightning',
-        self.start_with_flame and 'Flame', self.start_with_2split and '2Split', self.start_with_4split and '4Split', self.start_with_explode and 'Explode', self.start_with_laser and 'Laser',
-    }
-    starting_attacks = fn.select(starting_attacks, function(k, v) return v end)
-    if #starting_attacks > 0 then self:setAttack(table.random(starting_attacks)) end
+    -- Setting starting attack
+    local valid_attacks = {}
+    if self.start_with_double then table.insert(valid_attacks, "Double") end
+    if self.start_with_triple then table.insert(valid_attacks, "Triple") end
+    if self.start_with_rapid then table.insert(valid_attacks, "Rapid") end
+    if self.start_with_spread then table.insert(valid_attacks, "Spread") end
+    if self.start_with_back then table.insert(valid_attacks, "Back") end
+    if self.start_with_side then table.insert(valid_attacks, "Side") end
+    if self.start_with_homing then table.insert(valid_attacks, "Homing") end
+    if self.start_with_blast then table.insert(valid_attacks, "Blast") end
+    if self.start_with_spin then table.insert(valid_attacks, "Spin") end
+    if self.start_with_bounce then table.insert(valid_attacks, "Bounce") end
+    if self.start_with_lightning then table.insert(valid_attacks, "Lightning") end
+    if self.start_with_flame then table.insert(valid_attacks, "Flame") end
+    if self.start_with_2split then table.insert(valid_attacks, "2Split") end
+    if self.start_with_4split then table.insert(valid_attacks, "4Split") end
+    if self.start_with_explode then table.insert(valid_attacks, "Explode") end
+    if self.start_with_laser then table.insert(valid_attacks, "Laser") end
+    if #valid_attacks > 0 then self:setAttack(table.random(valid_attacks)) end
 
-    -- Passives
+    -- Unique stat modifiers
     if self.energy_shield then
-        self.invulnerability_time_multiplier = self.invulnerability_time_multiplier/2
+        self.invulnerability_time_multiplier = self.invulnerability_time_multiplier / 2
     end
-
     if self.no_boost then
         self.max_boost = 0
         self.boost = self.max_boost
     end
-
     if self.half_ammo then
-        self.max_ammo = math.ceil(self.max_ammo/2)
+        self.max_ammo = math.ceil(self.max_ammo / 2)
         self.ammo = self.max_ammo
     end
-
     if self.half_hp then
-        self.max_hp = math.ceil(self.max_hp/2)
+        self.max_hp = math.ceil(self.max_hp / 2)
         self.hp = self.max_hp
     end
+    if self.projectile_waviness_multiplier > 1 then
+		self.wavy_projectiles = true
+	end
 
-    if self.projectile_waviness_multiplier > 1 then self.wavy_projectiles = true end
-    if self.pspd_multiplier.value < 0 then self.pspd_multiplier.base = 0 end
+    -- Stop negative projectile speed from existing
+    if self.pspd_multiplier.value < 0 then
+		self.pspd_multiplier.base = 0
+	end
 end
 
 function Player:setClass(class)
@@ -1974,7 +2257,7 @@ function Player:setClasses()
 
     if self.bomber then
         self.area_multiplier = self.area_multiplier + 0.25
-        self.attack_twice_chance = self.attack_twice_chance + 0.25
+        self.attack_twice_chance = self.attack_twice_chance + 25
     end
 
     if self.zoomer then

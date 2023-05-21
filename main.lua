@@ -23,6 +23,14 @@ require 'utils'
 require 'globals'
 require 'tree'
 
+-- Improve performance
+-- https://hc.readthedocs.io/en/latest/SpatialHash.html#Spatialhash
+HC.hash().cell_size = 25
+
+if not love.window.setIcon(love.image.newImageData("resources/graphics/icon.jpg")) then
+	print(string.format('icon failed to load\n'))
+end
+
 function isModuleAvailable(name)
     if package.loaded[name] then
         return true

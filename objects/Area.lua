@@ -16,30 +16,33 @@ function Area:new(room)
 end
 
 function Area:update(dt)
-    local fps = love.timer.getFPS()
 
     -- Adjust projectile cap based on FPS
+    local fps = love.timer.getFPS()
     self.down_fps_timer = self.down_fps_timer + dt
     self.up_fps_timer = self.up_fps_timer + dt
-    if fps < 50 and self.down_fps_timer > 2 then 
-        self.projectile_cap = math.max(self.projectile_cap/2, 100)
-        self.down_fps_timer = 0
-    end
-    if fps < 50 then self.up_fps_timer = 0 end
-    if fps >= 50 then self.down_fps_timer = 0 end
-    if fps >= 50 and self.up_fps_timer > 2 then 
-        self.projectile_cap = math.min(self.projectile_cap + 100, 1000) 
-        self.up_fps_timer = 1.5
+    if fps < 50 then
+		if self.down_fps_timer > 2 then
+			self.projectile_cap = math.max(self.projectile_cap / 2, 100)
+			self.down_fps_timer = 0
+		end
+		self.up_fps_timer = 0
+	elseif fps >= 50 then
+		if self.up_fps_timer > 2 then
+			self.projectile_cap = math.min(self.projectile_cap + 100, 1000)
+			self.up_fps_timer = 1.5
+		end
+		self.down_fps_timer = 0
     end
 
     -- Set some projectiles as dead if above projectile cap
-    if self.projectile_amount > self.projectile_cap then
-        local n = self.projectile_amount - self.projectile_cap
+	if self.projectile_amount > self.projectile_cap then
+		local projs_to_kill = self.projectile_amount - self.projectile_cap
         for _, game_object in ipairs(self.game_objects) do
             if game_object.class_name == 'Projectile' then
                 game_object.dead = true
-                n = n - 1
-                if n == 0 then break end
+				projs_to_kill = projs_to_kill - 1
+				if projs_to_kill <= 0 then break end
             end
         end
     end
@@ -50,27 +53,37 @@ function Area:update(dt)
         game_object:update(dt)
 
         -- Remove dead objects
-        if game_object.dead then 
-            if game_object.class_name == 'Projectile' then self.projectile_amount = self.projectile_amount - 1 end
-            if game_object.class_name == 'Ammo' then self.ammo_amount = self.ammo_amount - 1 end
-            if game_object.class_name == 'InfoText' then self.info_text_amount = self.info_text_amount - 1 end
+        if game_object.dead then
+            if game_object:is(Projectile) and not game_object.proj_spawned then
+				self.projectile_amount = self.projectile_amount - 1
+			end
+            if game_object:is(Ammo) then
+				self.ammo_amount = self.ammo_amount - 1
+			end
+            if game_object:is(InfoText) then
+				self.info_text_amount = self.info_text_amount - 1
+			end
             game_object:destroy()
-            table.remove(self.game_objects, i) 
+			table.remove(self.game_objects, i)
         end
     end
 
     for i = #self.enemies, 1, -1 do
-        local game_object = self.enemies[i]
-        local outside_game_boundaries = false 
-        if game_object.x > gw + 120 then outside_game_boundaries = true; game_object.dead = true end
-        if game_object.x < -120 then outside_game_boundaries = true; game_object.dead = true end
-        if game_object.dead then
-            if not outside_game_boundaries then self.room.enemies_killed = self.room.enemies_killed + 1 end
+        local enemy = self.enemies[i]
+        local outside_game_boundaries = false
+		if enemy.x > gw + 120 or enemy.x < -120 or enemy.y < -120 or enemy.y > gh + 120 then
+			outside_game_boundaries = true
+			enemy.dead = true
+		end
+        if enemy.dead then
+            if not outside_game_boundaries then
+				self.room.enemies_killed = self.room.enemies_killed + 1
+			end
             table.remove(self.enemies, i)
         end
     end
 
-    table.sort(self.game_objects, function(a, b) 
+    table.sort(self.game_objects, function(a, b)
         if a.depth == b.depth then return a.creation_time < b.creation_time
         else return a.depth < b.depth end
     end)
@@ -101,21 +114,37 @@ function Area:drawOnly(types)
     end
 end
 
-function Area:addGameObject(game_object_type, x, y, opts)
-    if game_object_type == 'Projectile' and self.projectile_amount > self.projectile_cap then return end
-    if game_object_type == 'Ammo' and self.ammo_amount > self.ammo_cap then return end
-    if game_object_type == 'InfoText' and self.info_text_amount > self.info_text_cap then return end
-    if game_object_type == 'Projectile' then self.projectile_amount = self.projectile_amount + 1 end
-    if game_object_type == 'Ammo' then self.ammo_amount = self.ammo_amount + 1 end
-    if game_object_type == 'InfoText' then self.info_text_amount = self.info_text_amount + 1 end
-    if fn.any(enemies, game_object_type) then self.room.enemies_created = self.room.enemies_created + 1 end
+function Area:addGameObject(obj_type, x, y, opts)
+    if obj_type == 'Projectile' and not opts.proj_spawned then
+		if self.projectile_amount > self.projectile_cap then
+			return
+		else
+			self.projectile_amount = self.projectile_amount + 1
+		end
+	end
+    if obj_type == 'Ammo' then
+		if self.ammo_amount > self.ammo_cap then
+			return
+		else
+			self.ammo_amount = self.ammo_amount + 1
+		end
+	end
+    if obj_type == 'InfoText' then
+		if self.info_text_amount > self.info_text_cap then
+			return
+		else
+			self.info_text_amount = self.info_text_amount + 1
+		end
+	end
 
-    local opts = opts or {}
-    local game_object = _G[game_object_type](self, x or 0, y or 0, opts)
-    game_object.class_name = game_object_type
-    table.insert(self.game_objects, game_object)
-    if fn.any(enemies, game_object_type) then table.insert(self.enemies, game_object) end
-    return game_object
+    local new_obj = _G[obj_type](self, x or 0, y or 0, opts or {})
+	new_obj.class_name = obj_type
+	table.insert(self.game_objects, new_obj)
+	if fn.any(enemies, obj_type) then
+		self.room.enemies_created = self.room.enemies_created + 1
+		table.insert(self.enemies, new_obj)
+	end
+    return new_obj
 end
 
 function Area:addPhysicsWorld()

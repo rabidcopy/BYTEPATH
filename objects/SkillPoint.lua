@@ -24,6 +24,10 @@ function SkillPoint:update(dt)
     self.shape:move(self.vx*dt, 0)
     self.shape:rotate(self.dr*dt)
     self.x, self.y = self.shape:center()
+
+    if self.x < -100 or self.x > gw + 100 then
+        self.dead = true
+    end
 end
 
 function SkillPoint:draw()

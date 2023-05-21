@@ -22,6 +22,7 @@ function ShapeEffect2:new(area, x, y, opts)
         self.timer:every(0.05, function() self.disappear = not self.disappear end, 6)
         self.timer:after(0.35, function() self.disappear = false end)
     end)
+    self.timer:after(0.60, function() self.dead = true end)
 end
 
 function ShapeEffect2:update(dt)

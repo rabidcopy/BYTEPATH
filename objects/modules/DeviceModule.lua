@@ -340,7 +340,11 @@ function DeviceModule:new(console, y)
         }
     }
 
-    self.device_index = 1
+    for i = 1, #devices do
+        if devices[i] == device then
+            self.device_index = i
+        end
+    end
 end
 
 function DeviceModule:update(dt)

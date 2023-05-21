@@ -48,15 +48,27 @@ function GameObject:enter(tag)
 end
 
 function GameObject:enemyProjectileCollisions()
-    for _, shape in ipairs(self:enter('Projectile')) do
-        local object = shape.object
-        if object then
-            self:hit(object.damage, object.x, object.y, object.r)
-            if self.hp <= 0 then current_room.player:onKill(self) end
-            if object.pierce > 0 then 
-                object.pierce = object.pierce - 1
-                if object.attack == 'Explode' then object.area:addGameObject('Explosion', object.x, object.y, {color = self.color}) end
-            else object:die() end
+    for _, proj in ipairs(self:enter('Projectile')) do
+        if proj.object then
+			self:hit(proj.object.damage, proj.object.x, proj.object.y, proj.object.r)
+			if self.hp <= 0 then
+				current_room.player:onKill(self)
+			end
+			if proj.object.pierce > 0 then
+				proj.object.pierce = proj.object.pierce - 1
+				if proj.object.attack == "Explode" then
+					proj.object.area:addGameObject("Explosion", proj.object.x, proj.object.y, {
+						color = proj.object.color,
+						attack = proj.object.attack,
+						no_projectiles = proj.object.proj_spawned
+					})
+				end
+            else
+				proj.object:die()
+			end
         end
+        if self.dead then
+			break
+		end
     end
 end
