@@ -578,7 +578,7 @@ function Player:update(dt)
 				elseif shape.object:is(Key) then
 					playGameItem()
 					shape.object:die()
-					current_room.key_found = 'KEY ' .. keys[object.n].address.. ' FOUND'
+					current_room.key_found = 'KEY ' .. keys[shape.object.n].address.. ' FOUND'
 					timer:after(3, function() current_room.key_found = false end)
 					found_keys[shape.object.n] = 1
 					current_room:glitchError()
