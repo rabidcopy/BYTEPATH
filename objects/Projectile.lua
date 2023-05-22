@@ -2,205 +2,253 @@ Projectile = GameObject:extend()
 
 function Projectile:new(area, x, y, opts)
     Projectile.super.new(self, area, x, y, opts)
+	if self.attack ~= "Flame" then
+		playGameShoot1()
+	end
 
-    if self.attack ~= 'Flame' then playGameShoot1() end
+	local p_size = opts.s or 2.5
+	if current_room.player.size_multiplier > 1 then
+		self.s = p_size * (current_room.player.projectile_size_multiplier + ((current_room.player.size_multiplier - 1) / 1.5))
+	else
+		self.s = p_size * current_room.player.projectile_size_multiplier
+	end
 
-    if current_room.player.size_multiplier > 1 then self.s = (opts.s or 2.5)*(current_room.player.projectile_size_multiplier + (current_room.player.size_multiplier - 1)/1.5)
-    else self.s = (opts.s or 2.5)*current_room.player.projectile_size_multiplier end
-    self.v = (opts.v or 200)*current_room.player.pspd_multiplier.value
-    self.vx, self.vy = self.v*math.cos(self.r), self.v*math.sin(self.r)
-    self.w, self.h = self.s, self.s
+	local attack = attacks[self.attack]
+	self.v = (opts.v or 200) * current_room.player.pspd_multiplier.value
+	self.vy = self.v * math.sin(self.r)
+	self.vx = self.v * math.cos(self.r)
+	self.h = self.s
+	self.w = self.s
+	self.color = opts.color or attack.color
+	self.shape = HC.circle(self.x, self.y, self.s)
+	self.shape.id = self.id
+	self.shape.object = self
+	self.shape.tag = "Projectile"
+	self.damage = attack.damage or 100
+	self.shield = not self.no_shield and not self.mine and current_room.player.chances.shield_projectile_chance:next()
+	self.pierce = current_room.player.projectile_pierce
+	self.duration = (attack.duration and random(attack.duration[1], attack.duration[2]))
+		or (self.mine and random(8, 12))
+		or (self.shield and 6)
+		or 20
+	self.duration = self.duration * current_room.player.projectile_duration_multiplier
 
-    self.color = opts.color or attacks[self.attack].color
-    self.shape = HC.circle(self.x, self.y, self.s)
-    self.shape.id = self.id
-    self.shape.object = self
-    self.shape.tag = 'Projectile'
-    self.damage = 100
-    self.shield = current_room.player.chances.shield_projectile_chance:next()
-    self.pierce = current_room.player.projectile_pierce
+	-- Attack-specific stats
+	if self.attack == "Rapid" then
+		self.graphics_types = { "rgb_shift" }
+	elseif self.attack == "Spread" then
+		self.graphics_types = { "rgb_shift" }
+	elseif self.attack == "Homing" then
+		local function makeTrail()
+			local angle = Vector.angle(self.vx, self.vy)
+			local part_x = self.x - self.s * math.cos(angle)
+			local part_y = self.y - self.s * math.sin(angle)
+			self.area.room.trail_particles:add(part_x, part_y, self.attack)
+		end
+		self.timer:every(0.02, makeTrail)
+		self.v = self.v * current_room.player.homing_speed_multiplier
+		self.vy = self.v * math.sin(self.r)
+		self.vx = self.v * math.cos(self.r)
+		local keep_looking = true
+		local tries = 0
+		while keep_looking and tries < 20 do
+			self.target = table.random(self.area.enemies)
+			if self.target and self.target.x < gw and self.target.x > 0 and self.target.y < gh and self.target.y > 0 then
+				keep_looking = false
+			end
+			tries = tries + 1
+		end
+		local function newTarget()
+			if self.target and self.target.dead then
+				self.target = table.random(self.area.enemies)
+			end
+		end
+		self.timer:every(1, newTarget)
+	elseif self.attack == "Blast" then
+		self.color = table.random(negative_colors)
+		if self.shield and current_room.player.blast_shield then
+			self.duration = self.duration * 6
+		end
+	elseif self.attack == "Spin" then
+		if current_room.player.fixed_spin_direction then
+			self.rv = random(math.pi, 2 * math.pi)
+		else
+			self.rv = table.random({random(-2 * math.pi, -math.pi), random(math.pi, 2 * math.pi)})
+		end
+		function makeTrail()
+			self.area.room.projectile_trails:add(self)
+		end
+		self.timer:every(0.02, makeTrail)
+	elseif self.attack == "Flame" then
+		playGameFlame()
+		local function makeTrail()
+			self.area.room.projectile_trails:add(self)
+		end
+		self.timer:every(0.05, makeTrail)
+	elseif self.attack == "2Split" then
+		local function makeTrail()
+			local angle = Vector.angle(self.vx, self.vy)
+			local part_x = self.x - self.s * math.cos(angle)
+			local part_y = self.y - self.s * math.sin(angle)
+			self.area.room.trail_particles:add(part_x, part_y, self.attack)
+		end
+		self.timer:every(0.02, makeTrail)
+	elseif self.attack == "4Split" then
+		local function makeTrail()
+			local angle = Vector.angle(self.vx, self.vy)
+			local part_x = self.x - self.s * math.cos(angle)
+			local part_y = self.y - self.s * math.sin(angle)
+			self.area.room.trail_particles:add(part_x, part_y, self.attack)
+		end
+		self.timer:every(0.02, makeTrail)
+	elseif self.attack ==  "Explode" then
+		local function makeTrail()
+			local angle = Vector.angle(self.vx, self.vy)
+			local part_x = self.x - self.s * math.cos(angle)
+			local part_y = self.y - self.s * math.sin(angle)
+			self.area.room.trail_particles:add(part_x, part_y, self.attack)
+		end
+		self.timer:every(0.02, makeTrail)
+	end
 
-    -- Attack setup
-    if self.attack == 'Rapid' then
-        self.graphics_types = {'rgb_shift'}
+	if self.mine then
+		self.rv = table.random({
+			random(-12 * math.pi, -10 * math.pi),
+			random(10 * math.pi, 12 * math.pi)
+		})
+	end
 
-    elseif self.attack == 'Spread' then
-        self.graphics_types = {'rgb_shift'}
+	if current_room.player.projectile_ninety_degree_change then
+		local function startAngleChange()
+			self.ninety_degree_direction = table.random({-1, 1})
+			self.r = self.r + self.ninety_degree_direction * math.pi / 2
+			local function changeAngleFirst()
+				self.r = self.r - self.ninety_degree_direction * math.pi / 2
+				local function changeAngleSecond()
+					self.r = self.r - self.ninety_degree_direction * math.pi / 2
+					self.ninety_degree_direction = -1 * self.ninety_degree_direction
+				end
+				self.timer:after("ninety_degree_second", 0.1 / current_room.player.projectile_angle_change_frequency_multiplier, changeAngleSecond)
+			end
+			self.timer:every("ninety_degree_first", 0.25 / current_room.player.projectile_angle_change_frequency_multiplier, changeAngleFirst)
+		end
+		self.timer:after(0.2, startAngleChange)
+	end
 
-    elseif self.attack == 'Homing' then
-        self.damage = 150
-        self.timer:every(0.02, function()
-            local r = Vector.angle(self.vx, self.vy)
-            self.area.room.trail_particles:add(self.x - 1.0*self.s*math.cos(r), self.y - 1.0*self.s*math.sin(r), self.attack)
-        end)
-        self.v = self.v*current_room.player.homing_speed_multiplier
-        self.vx, self.vy = self.v*math.cos(self.r), self.v*math.sin(self.r)
-        local target_offscreen = true
-        local run = 0
-        while target_offscreen and run < 20 do
-            self.target = table.random(self.area.enemies)
-            if target then target_offscreen = (self.target.x > gw) or (self.target.x < 0) end
-            run = run + 1
-        end
-        self.timer:every(1, function() if self.target and self.target.dead then self.target = table.random(self.area.enemies) end end)
+	if current_room.player.projectile_random_degree_change then
+		local function startAngleChange()
+			self.r = self.r + table.random({-1, 1}) * math.pi / 6
+			local function changeAngle()
+				self.r = self.r + random(-math.pi / 2, math.pi / 2)
+			end
+			self.timer:every("forty_five_degree", 0.25 / current_room.player.projectile_angle_change_frequency_multiplier, changeAngle)
+		end
+		self.timer:after(0.2, startAngleChange)
+	end
 
-    elseif self.attack == 'Blast' then
-        self.damage = 75
-        self.color = table.random(negative_colors)
-        if self.shield and current_room.player.blast_shield then
-            self.timer:tween(6*random(0.4, 0.6)*current_room.player.projectile_duration_multiplier, self, {v = 0}, 'linear', function() 
-                if current_room.player.projectiles_explode_on_expiration and not self.dont_explode then 
-                    self.area:addGameObject('Explosion', self.x, self.y, {color = self.color, w = random(24, 28), from_explode_on_expiration = true}) 
-                end
-                self:die() 
-            end)
-        else
-            self.timer:tween(random(0.4, 0.6)*current_room.player.projectile_duration_multiplier, self, {v = 0}, 'linear', function() 
-                if current_room.player.projectiles_explode_on_expiration and not self.dont_explode then 
-                    self.area:addGameObject('Explosion', self.x, self.y, {color = self.color, w = random(24, 28), from_explode_on_expiration = true}) 
-                end
-                self:die() 
-            end)
-        end
+	if current_room.player.wavy_projectiles then
+		local wave_dir = table.random({-1, 1})
 
-    elseif self.attack == 'Spin' then
-        if current_room.player.fixed_spin_direction then self.rv = random(math.pi, 2*math.pi)
-        else self.rv = table.random({random(-2*math.pi, -math.pi), random(math.pi, 2*math.pi)}) end
-        self.timer:after(random(2.4, 3.2)*current_room.player.projectile_duration_multiplier, function() 
-            if current_room.player.projectiles_explode_on_expiration and not self.dont_explode then 
-                self.area:addGameObject('Explosion', self.x, self.y, {color = self.color, from_explode_on_expiration = true}) 
-            end
-            self:die() 
-            if current_room.player.chances.spin_projectile_on_expiration_chance:next() then
-                self.area:addGameObject('Projectile', self.x, self.y, {color = self.color, r = self.r, attack = 'Spin'})
-            end
-        end)
-        self.timer:every(0.02, function()
-            self.area.room.projectile_trails:add(self.x, self.y, Vector.angle(self.vx, self.vy), self.s, self.color)
-        end)
+		local function doTheWave()
+			self.timer:tween(0.25, self, {r = self.r - current_room.player.projectile_waviness_multiplier * wave_dir * math.pi / 4}, "linear")
+		end
+		self.timer:tween(0.25, self, {r = self.r + current_room.player.projectile_waviness_multiplier * wave_dir * math.pi / 8}, "linear", doTheWave)
 
-    elseif self.attack == 'Flame' then
-        playGameFlame()
-        self.damage = 60
-        self.timer:tween(random(0.6, 1.0)*current_room.player.projectile_duration_multiplier, self, {v = 0}, 'in-out-cubic', function() 
-            if current_room.player.projectiles_explode_on_expiration and not self.dont_explode then 
-                self.area:addGameObject('Explosion', self.x, self.y, {color = self.color, w = random(24, 28), from_explode_on_expiration = true}) 
-            end
-            self:die() 
-        end)
-        self.timer:every(0.05, function()
-            self.area.room.projectile_trails:add(self.x, self.y, Vector.angle(self.vx, self.vy), self.s, self.color)
-        end)
+		local function startTheWave()
+			local function waveBack()
+				self.timer:tween(0.5, self, {r = self.r - current_room.player.projectile_waviness_multiplier * wave_dir * math.pi / 4}, "linear")
+			end
+			self.timer:tween(0.25, self, {r = self.r + current_room.player.projectile_waviness_multiplier * wave_dir * math.pi / 4}, "linear", waveBack)
+		end
+		self.timer:every(0.75, startTheWave)
+	end
 
-    elseif self.attack == '2Split' then
-        self.timer:every(0.02, function()
-            local r = Vector.angle(self.vx, self.vy)
-            self.area.room.trail_particles:add(self.x - 1.0*self.s*math.cos(r), self.y - 1.0*self.s*math.sin(r), self.attack)
-        end)
+	if current_room.player.fast_slow then
+		local old_v = self.v
+		local function becomeSlow()
+			self.timer:tween("fast_slow_second", 0.3, self, {v = current_room.player.projectile_deceleration_multiplier * old_v / 2}, "linear")
+		end
+		self.timer:tween("fast_slow_first", 0.2, self, {v = 2 * self.v * current_room.player.projectile_acceleration_multiplier}, "in-out-cubic", becomeSlow)
+	end
 
-    elseif self.attack == '4Split' then
-        self.timer:every(0.02, function()
-            local r = Vector.angle(self.vx, self.vy)
-            self.area.room.trail_particles:add(self.x - 1.0*self.s*math.cos(r), self.y - 1.0*self.s*math.sin(r), self.attack)
-        end)
+	if current_room.player.slow_fast then
+		local old_v = self.v
+		local function becomeFast()
+			self.timer:tween("slow_fast_second", 0.3, self, {v = 2 * old_v * current_room.player.projectile_acceleration_multiplier}, "linear")
+		end
+		self.timer:tween("slow_fast_first", 0.2, self, {v = current_room.player.projectile_deceleration_multiplier * self.v / 2}, "in-out-cubic", becomeFast)
+	end
 
-    elseif self.attack == 'Explode' then
-        self.damage = 200
-        self.timer:every(0.02, function()
-            local r = Vector.angle(self.vx, self.vy)
-            self.area.room.trail_particles:add(self.x - 1.0*self.s*math.cos(r), self.y - 1.0*self.s*math.sin(r), self.attack)
-        end)
-    end
+	self.damage = self.damage * (self.damage_multiplier or 1) * (current_room.player.damage_multiplier or 1)
 
-    if self.mine then
-        self.rv = table.random({random(-12*math.pi, -10*math.pi), random(10*math.pi, 12*math.pi)})
-        self.timer:after(random(8, 12)*current_room.player.projectile_duration_multiplier, function()
-            self.area:addGameObject('Explosion', self.x, self.y, {color = self.color})
-            self:die()
-        end)
-    end
+	if self.shield then
+		self.damage = self.damage * current_room.player.shield_projectile_damage_multiplier
+		self.orbit_distance = random(32, 64)
+		self.orbit_speed = table.random({
+			random(-6, -1),
+			random(1, 6)
+		}) * current_room.player.pspd_multiplier.value
+		self.orbit_offset = random(0, 2 * math.pi)
 
-    if current_room.player.projectile_ninety_degree_change then
-		self.timer:after(0.2, function()
-      		self.ninety_degree_direction = table.random({-1, 1})
-        	self.r = self.r + self.ninety_degree_direction*math.pi/2
-            self.timer:every('ninety_degree_first', 0.25/current_room.player.projectile_angle_change_frequency_multiplier, function()
-                self.r = self.r - self.ninety_degree_direction*math.pi/2
-                self.timer:after('ninety_degree_second', 0.1/current_room.player.projectile_angle_change_frequency_multiplier, function()
-                    self.r = self.r - self.ninety_degree_direction*math.pi/2
-                    self.ninety_degree_direction = -1*self.ninety_degree_direction
-                end)
-            end)
-      	end)
-    end
+		self.invisible = true
+		local function becomeVisible() self.invisible = false end
+		self.timer:after(0.05, becomeVisible)
+	end
 
-    if current_room.player.projectile_random_degree_change then
-		self.timer:after(0.2, function()
-            self.r = self.r + table.random({-1, 1})*math.pi/6
-            self.timer:every('forty_five_degree', 0.25/current_room.player.projectile_angle_change_frequency_multiplier, function()
-                self.r = self.r + random(-math.pi/2, math.pi/2)
-            end)
-      	end)
-    end
+	self.previous_x, self.previous_y = self.shape:center()
 
-    if current_room.player.wavy_projectiles then
-        local direction = table.random({-1, 1})
-        self.timer:tween(0.25, self, {r = self.r + current_room.player.projectile_waviness_multiplier*direction*math.pi/8}, 'linear', function()
-            self.timer:tween(0.25, self, {r = self.r - current_room.player.projectile_waviness_multiplier*direction*math.pi/4}, 'linear')
-        end)
-        self.timer:every(0.75, function()
-            self.timer:tween(0.25, self, {r = self.r + current_room.player.projectile_waviness_multiplier*direction*math.pi/4}, 'linear', function()
-                self.timer:tween(0.5, self, {r = self.r - current_room.player.projectile_waviness_multiplier*direction*math.pi/4}, 'linear')
-            end)
-        end)
-    end
+	if self.attack == "Homing" or self.attack == "2Split" or self.attack == "4Split" or self.attack == "Explode" then
+		self.mesh_left = love.graphics.newMesh({
+			{ -2 * self.s, 0 },
+			{ 0, -1.5 * self.s },
+			{ 0, 1.5 * self.s }
+		}, "fan", "static")
+		self.mesh_right = love.graphics.newMesh({
+			{ 0, -1.5 * self.s },
+			{ 0, 1.5 * self.s },
+			{ 1.5 * self.s, 0 }
+		}, "fan", "static")
+	else
+		local length = 2 * self.s
+		local width = self.s * 0.375
+		self.mesh_left = love.graphics.newMesh({
+			{ -length, -width },
+			{ 0, -width },
+			{ 0, width },
+			{ -length, width }
+		}, "fan", "static")
+		self.mesh_right = love.graphics.newMesh({
+			{ 0, -width },
+			{ length, -width },
+			{ length, width },
+			{ 0, width }
+		}, "fan", "static")
+	end
 
-    if current_room.player.fast_slow then
-        local initial_v = self.v
-        self.timer:tween('fast_slow_first', 0.2, self, {v = 2*initial_v*current_room.player.projectile_acceleration_multiplier}, 'in-out-cubic', function()
-            self.timer:tween('fast_slow_second', 0.3, self, {v = current_room.player.projectile_deceleration_multiplier*initial_v/2}, 'linear')
-        end)
-    end
+	self.timer:after(self.duration, self:expire())
+end
 
-    if current_room.player.slow_fast then
-        local initial_v = self.v
-        self.timer:tween('slow_fast_first', 0.2, self, {v = current_room.player.projectile_deceleration_multiplier*initial_v/2}, 'in-out-cubic', function()
-            self.timer:tween('slow_fast_second', 0.3, self, {v = 2*initial_v*current_room.player.projectile_acceleration_multiplier}, 'linear')
-        end)
-    end
-
-    self.damage = self.damage*(self.damage_multiplier or 1)
-    self.damage = self.damage*(current_room.player.damage_multiplier or 1)
-
-    if self.shield then
-        self.damage = self.damage*(current_room.player.shield_projectile_damage_multiplier)
-        self.orbit_distance = random(32, 64)
-        self.orbit_speed = random(-6, 6)
-        self.orbit_offset = random(0, 2*math.pi)
-        self.timer:after(6*current_room.player.projectile_duration_multiplier, function() 
-            if current_room.player.projectiles_explode_on_expiration and not self.dont_explode then 
-                self.area:addGameObject('Explosion', self.x, self.y, {color = self.color, w = random(24, 28), from_explode_on_expiration = true}) 
-            end
-            self:die() 
-        end)
-        self.invisible = true
-        self.timer:after(0.05, function() self.invisible = false end)
-    end
-
-    self.previous_x, self.previous_y = self.shape:center()
-
-    if self.attack == 'Homing' or self.attack == '2Split' or self.attack == '4Split' or self.attack == 'Explode' then
-        self.mesh_left = love.graphics.newMesh({{-2*self.s, 0}, {0, -1.5*self.s}, {0, 1.5*self.s}}, 'fan', 'static')
-        self.mesh_right = love.graphics.newMesh({{0, -1.5*self.s}, {0, 1.5*self.s}, {1.5*self.s, 0}}, 'fan', 'static')
-    else
-        local h = self.s - self.s/4
-        self.mesh_left = love.graphics.newMesh({{-2*self.s, -h/2}, {0, -h/2}, {0, h/2}, {-2*self.s, h/2}}, 'fan', 'static')
-        self.mesh_right = love.graphics.newMesh({{0, -h/2}, {2*self.s, -h/2}, {2*self.s, h/2}, {0, h/2}}, 'fan', 'static')
-    end
-
-    self.timer:after(20*current_room.player.projectile_duration_multiplier, function() 
-        self:die()
-    end)
+function Projectile:expire()
+	return function()
+		if self.attack ~= "2Split" and self.attack ~= "4Split" and self.attack ~= "Explode" and (self.mine or (current_room.player.projectiles_explode_on_expiration and not self.dont_explode)) then
+			self.area:addGameObject("Explosion", self.x, self.y, {
+				color = self.color,
+				w = random(24, 28),
+				from_explode_on_expiration = true,
+				attack = self.attack
+			})
+		end
+		self:die()
+		if self.attack == "Spin" and not self.proj_spawned and current_room.player.chances.spin_projectile_on_expiration_chance:next() then
+			self.area:addGameObject("Projectile", self.x, self.y, {
+				attack = "Spin",
+				color = self.color,
+				r = self.r,
+				no_shield = true,
+				dont_explode = true
+			})
+		end
+	end
 end
 
 function Projectile:update(dt)
@@ -281,7 +329,7 @@ end
 
 function Projectile:draw()
     if self.invisible then return end
-    pushRotate(self.x, self.y, Vector.angle(self.vx, self.vy)) 
+    pushRotate(self.x, self.y, Vector.angle(self.vx, self.vy))
     if self.attack == 'Homing' or self.attack == '2Split' or self.attack == '4Split' or self.attack == 'Explode' then
         love.graphics.setColor(color255To1(self.color))
         love.graphics.draw(self.mesh_left, self.x, self.y)
@@ -305,37 +353,117 @@ function Projectile:destroy()
 end
 
 function Projectile:die(opts)
-    local opts = opts or {}
-    self.dead = true
-    if self.attack == 'Spread' then self.area:addGameObject('ProjectileDeathEffect', self.x, self.y, {color = table.random(all_colors), w = 3*self.s})
-    else self.area:addGameObject('ProjectileDeathEffect', self.x, self.y, {color = self.color or default_color, w = 3*self.s}) end
+	local opts = opts or {}
+	self.dead = true
 
-    if self.attack == '2Split' and opts.wall_split_angle then -- Wall split
-        local split_split = current_room.player.chances.split_projectiles_split_chance:next()
-        if self.split_split then split_split = false end
-        local r = opts.wall_split_angle
-        self.area:addGameObject('Projectile', self.x + 10*math.cos(r - math.pi/4), self.y + 10*math.sin(r - math.pi/4), 
-        {r = r - math.pi/4, attack = split_split and '2Split' or 'Neutral', color = self.color, split_split = split_split})
-        self.area:addGameObject('Projectile', self.x + 10*math.cos(r + math.pi/4), self.y + 10*math.sin(r + math.pi/4), 
-        {r = r + math.pi/4, attack = split_split and '2Split' or 'Neutral', color = self.color, split_split = split_split})
-    elseif self.attack == '2Split' and not opts.wall_split_angle then -- Enemy split
-        local split_split = current_room.player.chances.split_projectiles_split_chance:next()
-        if self.split_split then split_split = false end
-        self.area:addGameObject('Projectile', self.x + 10*math.cos(self.r - math.pi/4), self.y + 10*math.sin(self.r - math.pi/4), 
-        {r = self.r - math.pi/4, attack = split_split and '2Split' or 'Neutral', color = self.color, split_split = split_split})
-        self.area:addGameObject('Projectile', self.x + 10*math.cos(self.r + math.pi/4), self.y + 10*math.sin(self.r + math.pi/4), 
-        {r = self.r + math.pi/4, attack = split_split and '2Split' or 'Neutral', color = self.color, split_split = split_split})
-    end
+	-- Make death particle
+	if self.attack == "Spread" then
+		self.area:addGameObject("ProjectileDeathEffect", self.x, self.y, {
+			color = table.random(all_colors),
+			w = 3 * self.s
+		})
+	else
+		self.area:addGameObject("ProjectileDeathEffect", self.x, self.y, {
+			color = self.color or default_color,
+			w = 3 * self.s
+		})
+	end
 
-    if self.attack == '4Split' then
-        local split_split = current_room.player.chances.split_projectiles_split_chance:next()
-        if self.split_split then split_split = false end
-        local angles = {math.pi/4, 3*math.pi/4, -math.pi/4, -3*math.pi/4}
-        for i, angle in ipairs(angles) do self.area:addGameObject('Projectile', self.x + 10*math.cos(angle), self.y + 10*math.sin(angle), 
-        {r = angle, attack = split_split and '4Split' or 'Neutral', color = self.color, split_split = split_split}) end
-    end
+	-- 2Split makes 2 projectiles in directions diagonal to the impact/velocity
+	if self.attack == "2Split" and opts.wall_split_angle then
+		local split_split = current_room.player.chances.split_projectiles_split_chance:next()
+		if self.split_split then
+			split_split = false
+		end
+		self.area:addGameObject("Projectile",
+			self.x + 10 * math.cos(opts.wall_split_angle - math.pi / 4),
+			self.y + 10 * math.sin(opts.wall_split_angle - math.pi / 4),
+			{
+				r = opts.wall_split_angle - math.pi / 4,
+				attack = split_split and "2Split" or "Neutral",
+				color = self.color,
+				split_split = split_split,
+				proj_spawned = true,
+				no_shield = true
+			}
+		)
+		self.area:addGameObject("Projectile",
+			self.x + 10 * math.cos(opts.wall_split_angle + math.pi / 4),
+			self.y + 10 * math.sin(opts.wall_split_angle + math.pi / 4),
+			{
+				r = opts.wall_split_angle + math.pi / 4,
+				attack = split_split and "2Split" or "Neutral",
+				color = self.color,
+				split_split = split_split,
+				proj_spawned = true,
+				no_shield = true
+			}
+		)
+	elseif self.attack == "2Split" and not opts.wall_split_angle then
+		local split_split = current_room.player.chances.split_projectiles_split_chance:next()
+		if self.split_split then
+			split_split = false
+		end
+		self.area:addGameObject("Projectile",
+			self.x + 10 * math.cos(self.r - math.pi / 4),
+			self.y + 10 * math.sin(self.r - math.pi / 4),
+			{
+				r = self.r - math.pi / 4,
+				attack = split_split and "2Split" or "Neutral",
+				color = self.color,
+				split_split = split_split,
+				proj_spawned = true,
+				no_shield = true
+			}
+		)
+		self.area:addGameObject("Projectile",
+			self.x + 10 * math.cos(self.r + math.pi / 4),
+			self.y + 10 * math.sin(self.r + math.pi / 4),
+			{
+				r = self.r + math.pi / 4,
+				attack = split_split and "2Split" or "Neutral",
+				color = self.color,
+				split_split = split_split,
+				proj_spawned = true,
+				no_shield = true
+			}
+		)
+	end
 
-    if self.attack == 'Explode' then
-        self.area:addGameObject('Explosion', self.x, self.y, {color = self.color})
-    end
+	-- 4Split makes 4 projectiles in the diagonal directions
+	if self.attack == "4Split" then
+		local split_split = current_room.player.chances.split_projectiles_split_chance:next()
+		if self.split_split then
+			split_split = false
+		end
+		local angles = {
+			math.pi / 4,
+			3 * math.pi / 4,
+			-math.pi / 4,
+			-3 * math.pi / 4
+		}
+		for _, angle in ipairs(angles) do
+			self.area:addGameObject("Projectile",
+				self.x + 10 * math.cos(angle),
+				self.y + 10 * math.sin(angle),
+				{
+					r = angle,
+					attack = split_split and "4Split" or "Neutral",
+					color = self.color,
+					split_split = split_split,
+					proj_spawned = true,
+					no_shield = true
+				}
+			)
+		end
+	end
+
+	-- Explode attack creates an explosion
+	if self.attack == "Explode" then
+		self.area:addGameObject("Explosion", self.x, self.y, {
+			color = self.color,
+			attack = self.attack,
+			no_projectiles = self.proj_spawned
+		})
+	end
 end
