@@ -120,6 +120,20 @@ function love.load()
     recursiveEnumerate('rooms', room_files)
     requireFiles(room_files)
 
+	-- load mods from the mods folder.
+	if love.filesystem.isFused() then
+		if love.filesystem.mount(love.filesystem.getSourceBaseDirectory(), "base") then
+			print(love.filesystem.getSourceBaseDirectory())
+			local mods_to_load = {}
+			recursiveEnumerate( "base/mods", mods_to_load)
+			requireFiles(mods_to_load)
+		end
+	else
+		local mods_to_load = {}
+		recursiveEnumerate( "mods", mods_to_load)
+		requireFiles(mods_to_load)
+	end
+
     timer = Timer()
     input = Input()
     camera = Camera()
