@@ -57,9 +57,14 @@ function ConsoleInputLine:update(dt)
     if input:pressed('down') and not self.console.bytepath_main_active then
         if #command_history > 0 then
             command_history_index = command_history_index + 1
-            if command_history_index > #command_history then command_history_index = #command_history end
-            self.text = '[;root,]arch~ ' .. command_history[command_history_index]
-            self:setCharacters()
+			if command_history_index > #command_history then
+				command_history_index = #command_history + 1
+				self.text = '[;root,]arch~ '
+				self:setCharacters()
+			else
+				self.text = '[;root,]arch~ ' .. command_history[command_history_index]
+				self:setCharacters()
+			end
         end
     end
 end
