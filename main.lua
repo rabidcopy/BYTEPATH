@@ -27,7 +27,7 @@ require 'tree'
 -- https://hc.readthedocs.io/en/latest/SpatialHash.html#Spatialhash
 HC.hash().cell_size = 25
 
-if not love.window.setIcon(love.image.newImageData("resources/graphics/icon.jpg")) then
+if not love.window.setIcon(love.image.newImageData("resources/graphics/icon.png")) then
 	print(string.format('icon failed to load\n'))
 end
 
