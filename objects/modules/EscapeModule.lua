@@ -103,8 +103,10 @@ function EscapeModule:new(console, y)
         end)
 
     else
+		local gameVersion = require('version')
+
         self.console:addLine(0.02, '')
-        self.console:addLine(0.04, '$BYTEPATH% version 1.0-release')
+        self.console:addLine(0.04, '$BYTEPATH% version ' .. gameVersion .. '-release')
         self.console:addLine(0.06, 'The $BYTEPATH% test has been designed to test $[BYTE]-24% PSYON AI systems.')
         self.console:addLine(0.08, 'If you are reading this then you are an instance of such a system.')
         self.console:addLine(0.10, 'Your objective is to escape this terminal.')
