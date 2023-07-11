@@ -3,7 +3,6 @@ name: BYTEPATH CI
 on:
   push:
     branches: [main]
-    tags: [pre*, v*]
   pull_request:
 
 env:
